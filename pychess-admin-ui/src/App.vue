@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <!-- <div id="app">
     <img src="./assets/logo.png">
     <p>Current page: {{ $route.fullPath }}</p>
   </div>
@@ -8,17 +8,14 @@
     <RouterLink to="/about">About Page</RouterLink>
   </nav>
   <main>
-    <RouterView />
-  </main>
+    <router-view/>
+  </main> -->
+  <router-view/>
 </template>
 
-<!-- <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+<!-- <script lang="ts">
 export default {
-  name: 'app',
-  components: {
-    HelloWorld
+  name: 'App'
   }
 }
 </script> -->

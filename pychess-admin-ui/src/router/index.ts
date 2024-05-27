@@ -28,6 +28,17 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/views/AboutView.vue')
       }
     ]
+  },
+  {
+    path: '/user',
+    component: LayoutView,
+    children: [
+      {
+        path: '',
+        name: 'user',
+        component: () => import('@/views/UserView.vue')
+      }
+    ]
   }
 ]
 

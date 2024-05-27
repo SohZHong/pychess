@@ -1,16 +1,7 @@
 <template>
-  <!-- <div id="app">
-    <img src="./assets/logo.png">
-    <p>Current page: {{ $route.fullPath }}</p>
-  </div>
-  <nav>
-    <RouterLink to="/login">Login Page</RouterLink>
-    <RouterLink to="/about">About Page</RouterLink>
-  </nav>
-  <main>
+  <div id="app">
     <router-view/>
-  </main> -->
-  <router-view/>
+  </div>
 </template>
 
 <!-- <script lang="ts">
@@ -27,6 +18,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>

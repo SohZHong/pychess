@@ -22,3 +22,10 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped>
+.app-main {
+  display: flex;
+  flex-direction: column;
+}
+</style>

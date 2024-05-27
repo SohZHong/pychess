@@ -15,38 +15,67 @@
     </el-main>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import StripedTable from '@/components/StripedTable.vue'
+import { listAllUser } from '@/api/user'
+import { defineComponent, onMounted, ref } from 'vue'
 
-const tableData = [
-  {
-    name: 'Soh Zhe Hong',
-    password: 'sohzhehong',
-    email: 'sohzhehong09@gmail.com',
-    status: '0'
-  },
-  {
-    name: 'Soh Jia Seng',
-    password: 'jiaseng123',
-    email: 'jiaseng@gmail.com',
-    status: '1'
+// const tableData = [
+//   {
+//     name: 'Soh Zhe Hong',
+//     password: 'sohzhehong',
+//     email: 'sohzhehong09@gmail.com',
+//     status: '0'
+//   },
+//   {
+//     name: 'Soh Jia Seng',
+//     password: 'jiaseng123',
+//     email: 'jiaseng@gmail.com',
+//     status: '1'
+//   }
+// ]
+
+export default defineComponent({
+  name: 'UserView',
+  components: { StripedTable },
+  setup () {
+    const tableData = ref([])
+    const tableColLabels = {
+      name: 'Name',
+      password: 'Password',
+      email: 'Email',
+      status: 'Status'
+    }
+    // Fetch data on component mount
+    onMounted(async () => {
+      const data = await listAllUser('')
+      console.log(data)
+      tableData.value = data.data
+    })
+
+    return {
+      tableData,
+      tableColLabels
+    }
   }
-]
+})
 
-const tableColLabels = {
-  name: 'Name',
-  password: 'Password',
-  email: 'Email',
-  status: 'Status'
-}
 </script>
 <style scoped>
 .table-header {
-    text-align: left;
-    height: fit-content;
+  text-align: left;
+  height: fit-content;
+}
+
+.table-header h2 {
+  color: var(--primary-brand-font-color);
+}
+
+.el-main {
+  padding: 0;
 }
 
 .table-header .button-container {
-    align-self: flex-end;
+  align-self: flex-end;
 }
 </style>

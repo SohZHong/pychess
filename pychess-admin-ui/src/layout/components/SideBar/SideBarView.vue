@@ -29,6 +29,10 @@ const items = ref([
 </script>
 <style scoped>
 /* el-menu border can change later */
+.el-menu {
+    border-right: none;
+}
+
 .el-scrollbar {
     border-right: 1px solid var(--el-menu-border-color);
     min-height: 100%;

@@ -14,7 +14,7 @@
 import { PropType, defineComponent } from 'vue'
 
 interface TableDataItem {
-  [key: string]: string | number | boolean | null;
+  [key: string]: string | number | boolean | Date | null;
 }
 
 interface TableColItem{

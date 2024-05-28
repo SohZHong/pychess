@@ -26,12 +26,11 @@ service.interceptors.request.use(config => {
 // Response JSON example: { code: 200, message: "Request Successful }"
 service.interceptors.response.use(response => {
   // Handle the response here
-  const code = response.data.code
-  const msg = response.data.message
+  const { code, message } = response.data
   const router = useRouter()
 
   if (code === 401) {
-    ElMessageBox.alert(msg, 'Login Expired', {
+    ElMessageBox.alert(message, 'Login Expired', {
       confirmButtonText: 'OK',
       callback: () => {
         ElMessage({
@@ -41,9 +40,8 @@ service.interceptors.response.use(response => {
         router.push('/login')
       }
     })
-    return Promise.reject('Login Expired! Please relogin')
-  }
-  else {
+    return Promise.reject(new Error('Login Expired! Please relogin'))
+  } else {
     return response.data
   }
 },
@@ -54,10 +52,10 @@ service.interceptors.response.use(response => {
   const { message } = error
   ElMessage({
     type: 'error',
-    message: message,
+    message,
     duration: 5 * 1000 // Show for 5 seconds
   })
-  return Promise.reject(error)
+  return Promise.reject(new Error(message))
 })
 
 export default service

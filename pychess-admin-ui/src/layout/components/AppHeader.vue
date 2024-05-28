@@ -13,16 +13,8 @@
     </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import ProfileDropdown from './ProfileDropdown.vue'
-
-export default {
-  name: 'AppHeader',
-  components: {
-    ProfileDropdown
-  }
-}
-
 </script>
 
 <style scoped>

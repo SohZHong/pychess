@@ -9,18 +9,12 @@
     </el-container>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue'
+<script lang="ts" setup>
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
-export default defineComponent({
-  name: 'AppMain',
-  setup () {
-    const route = useRoute()
-    const key = computed(() => route.fullPath)
-    return { key, route }
-  }
-})
+const route = useRoute()
+const key = computed(() => route.fullPath)
 </script>
 
 <style scoped>

@@ -60,10 +60,46 @@
       title="Add User"
       width="600"
     >
-      <el-form>
+      <el-form
+      :model="userForm"
+      :rules="userFormRules"
+      ref="ruleFormRef"
+      label-width="auto"
+      label-position="left"
+      status-icon
+      >
         <el-row>
-          <el-form-item label="Username">
-            <el-input placeholder="Please enter username" maxLength="30"/>
+          <el-form-item label="Username" prop="username">
+            <el-input v-model="userForm.username" placeholder="Please enter username"/>
+          </el-form-item>
+        </el-row>
+        <el-row>
+          <el-form-item label="Password" prop="password">
+            <el-input v-model="userForm.password" type="password" autocomplete="off" placeholder="Please enter password"/>
+          </el-form-item>
+        </el-row>
+        <el-row>
+          <el-form-item label="Confirm Password" prop="confirmPassword">
+            <el-input v-model="userForm.confirmPassword" type="password" autocomplete="off"/>
+          </el-form-item>
+        </el-row>
+        <el-row>
+          <el-form-item label="Email" prop="email">
+            <el-input v-model="userForm.email" placeholder="Please enter email"/>
+          </el-form-item>
+        </el-row>
+        <el-row>
+          <el-form-item label="Status" prop="status">
+            <el-radio-group v-model="userForm.status">
+              <el-radio value="0">Active</el-radio>
+              <el-radio value="1">Suspended</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-row>
+        <el-row>
+          <el-form-item>
+            <el-button type="primary" @click="handleSubmitForm(ruleFormRef)">Create</el-button>
+            <el-button @click="handleResetForm(ruleFormRef)">Cancel</el-button>
           </el-form-item>
         </el-row>
       </el-form>
@@ -72,10 +108,10 @@
 
 <script lang="ts">
 import { listAllUser, deleteUser } from '@/api/user'
-import { defineComponent, onMounted, ref } from 'vue'
-import dayjs from 'dayjs'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
+import { ElMessage, ElMessageBox, FormInstance, FormRules } from 'element-plus'
 import { User, Delete, Edit } from '@element-plus/icons-vue'
+import { InternalRuleItem } from 'async-validator'
 
 interface UserProps {
   id: number;
@@ -83,6 +119,14 @@ interface UserProps {
   email: string;
   status: string;
   createTime: Date;
+}
+
+interface UserRuleForm {
+  username: string
+  password: string
+  confirmPassword: string
+  email: string
+  status: string
 }
 
 interface TableScope {
@@ -102,6 +146,60 @@ export default defineComponent({
     const showAddUserDialog = ref(false)
     // Multiple Rows Selected Status
     const multipleUsersSelected = ref(false)
+    // Insert User Form
+    const userForm = reactive<UserRuleForm>({
+      username: '',
+      password: '',
+      confirmPassword: '',
+      email: '',
+      status: '0'
+    })
+    const passwordRegex = '^(?=.*[a-z])(?=.*[A-Z])(?=.*)[a-zA-Z]{8,}$'
+    const ruleFormRef = ref<FormInstance>()
+    // Validate Password function
+    const validatePass = (rule: InternalRuleItem, value: string, callback: (error?: string | Error | undefined) => void) => {
+      if (value === '') {
+        callback(new Error('Please input the password'))
+      } else {
+        if (!value.match(passwordRegex)) {
+          callback(new Error('Password must have minimum 8 characters, one uppercase, one lowercase and one number'))
+        }
+        if (userForm.confirmPassword !== '') {
+          if (!ruleFormRef.value) return
+          ruleFormRef.value.validateField('confirmPassword')
+        }
+        callback()
+      }
+    }
+    // Check if two password matches
+    const confirmPassMatch = (rule: InternalRuleItem, value: string, callback: (error?: string | Error | undefined) => void) => {
+      if (value === '') {
+        callback(new Error('Please input the password again'))
+      } else if (value !== userForm.password) {
+        callback(new Error('Password does not match!'))
+      } else {
+        callback()
+      }
+    }
+    // User Form Rules
+    const userFormRules = reactive<FormRules<UserRuleForm>>({
+      username: [
+        { required: true, message: 'Please input username!', trigger: 'blur' },
+        { min: 5, max: 20, message: 'Username length should be 5-20', trigger: 'blur' }
+      ],
+      password: [
+        { required: true, message: 'Please input password!', trigger: 'blur' },
+        { validator: validatePass, trigger: 'blur' }
+      ],
+      confirmPassword: [
+        { required: true, message: 'Please input password!', trigger: 'blur' },
+        { validator: confirmPassMatch, trigger: 'blur' }
+      ],
+      email: [
+        { required: true, message: 'Please input email!', trigger: 'blur' },
+        { type: 'email', message: 'Please input correct email address', trigger: ['blur', 'change'] }
+      ]
+    })
     // Get table data
     const getData = async () => {
       const data = await listAllUser('')
@@ -140,6 +238,24 @@ export default defineComponent({
         })
       })
     }
+    // Form Submission Function
+    const handleSubmitForm = async (formEl: FormInstance | undefined) => {
+      if (!formEl) return
+      // Validate all fields against the rules
+      await formEl.validate((valid) => {
+        // Submit only if valid
+        if (valid) {
+          console.log('submit!')
+        } else {
+          console.log('error submit!')
+        }
+      })
+    }
+    // Reset Form Fields
+    const handleResetForm = (formEl: FormInstance | undefined) => {
+      if (!formEl) return
+      formEl.resetFields()
+    }
 
     onMounted(async () => {
       getData()
@@ -150,13 +266,18 @@ export default defineComponent({
       loading,
       ids,
       multipleUsersSelected,
+      userForm,
+      ruleFormRef,
       showAddUserDialog,
+      userFormRules,
       handleSelectionChange,
       getData,
       handleDeleteUser,
       User,
       Edit,
-      Delete
+      Delete,
+      handleSubmitForm,
+      handleResetForm
     }
   }
 })

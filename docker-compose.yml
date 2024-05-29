@@ -7,18 +7,19 @@ services:
       - "3306:3306"
     volumes:
       - sqlserver-data:/var/opt/mssql
-  # admin:
-  #   build:
-  #     context: ./pychess-admin
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - sqlserver
+  admin:
+    build:
+      context: ./pychess-admin
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - sqlserver
   # adminui:
   #   build:
   #     context: ./pychess-admin-ui
   #   ports:
-  #     - "8000:8000"
+  #     - "8080:8080"
   #   depends_on:
   #     - sqlserver
 

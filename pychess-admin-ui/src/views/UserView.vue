@@ -5,13 +5,21 @@
         </h2>
         <div class="button-container">
             <el-button plain @click="showAddUserDialog=true">Add User</el-button>
+            <el-button
+            plain
+            type="danger"
+            icon="el-icon-delete"
+            :disabled="!multipleUsersSelected"
+            @click="handleDeleteUser"
+            >Delete User</el-button>
         </div>
     </el-header>
     <el-main class="table-wrapper">
       <!-- Display User Data -->
         <el-scrollbar height="600px">
-            <el-table v-loading="loading" stripe :data="tableData">
-              <el-table-column fixed :prop="'name'" :label="'Name'"/>
+            <el-table v-loading="loading" stripe :data="tableData" @selection-change="handleSelectionChange">
+              <el-table-column fixed type="selection" width="50"  />
+              <el-table-column :prop="'name'" :label="'Name'"/>
               <el-table-column :prop="'email'" :label="'Email'"/>
               <el-table-column :prop="'status'" :label="'Status'"/>
               <el-table-column :prop="'createTime'" :label="'Create Time'"/>
@@ -60,6 +68,14 @@ import { defineComponent, onMounted, ref } from 'vue'
 import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  status: string;
+  createTime: Date;
+}
+
 interface TableScope {
   row: Record<string, unknown>
   $index: number
@@ -71,19 +87,28 @@ export default defineComponent({
     const tableData = ref([])
     // loading status
     const loading = ref(true)
+    // list of user ids
     const ids = ref<number[]>([])
     // Add User Dialog Show
     const showAddUserDialog = ref(false)
+    // Multiple Rows Selected Status
+    const multipleUsersSelected = ref(false)
     // Get table data
     const getData = async () => {
       const data = await listAllUser('')
       tableData.value = data.data
       loading.value = false
     }
+    // Select checkbox function
+    const handleSelectionChange = (selection: User[]) => {
+      console.log(selection)
+      ids.value = selection.map(user => user.id)
+      multipleUsersSelected.value = (selection.length > 1)
+    }
     // Delete button function
     const handleDeleteUser = (row: Record<string, unknown>) => {
       // Contains one or multiple user ids
-      const userIds = row.id ? row.id : ids
+      const userIds = row.id ? row.id : ids.value
       ElMessageBox.confirm(
         `Are you sure you want to delete user ${userIds}`,
         'Deleting User',
@@ -115,7 +140,9 @@ export default defineComponent({
       tableData,
       loading,
       ids,
+      multipleUsersSelected,
       showAddUserDialog,
+      handleSelectionChange,
       getData,
       handleDeleteUser
     }

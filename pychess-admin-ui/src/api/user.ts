@@ -40,8 +40,8 @@ export function updateUser (data: UserProps) {
 // Soft delete user
 export function softDeleteUser (userId: number | number[]) {
   let url: string = '/api/system/users'
-  let data;
-  if (Array.isArray(userId)){
+  let data
+  if (Array.isArray(userId)) {
     data = { ids: userId } // Send multiple ids as JSON to body
   } else {
     url += `/${userId}` // Append single id to url
@@ -55,13 +55,12 @@ export function softDeleteUser (userId: number | number[]) {
 // Delete user
 export function deleteUser (userId: number | number[]) {
   let url: string = '/api/system/users'
-  let data;
-  if (Array.isArray(userId)){
+  let data
+  if (Array.isArray(userId)) {
     data = { ids: userId } // Send multiple ids as JSON to body
   } else {
     url += `/${userId}` // Append single id to url
   }
-  
   return request({
     url,
     method: 'delete',

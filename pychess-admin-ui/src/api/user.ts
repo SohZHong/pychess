@@ -21,20 +21,50 @@ export function listAllUser (query: string) {
     params: query
   })
 }
-
+// Insert new user
+export function insertUser (data: UserProps) {
+  return request({
+    url: '/api/system/users',
+    method: 'post',
+    data
+  })
+}
 // Update user
 export function updateUser (data: UserProps) {
   return request({
-    url: '/api/system/user',
+    url: '/api/system/users',
     method: 'put',
     data
   })
 }
-
+// Soft delete user
+export function softDeleteUser (userId: number | number[]) {
+  let url: string = '/api/system/users'
+  let data;
+  if (Array.isArray(userId)){
+    data = { ids: userId } // Send multiple ids as JSON to body
+  } else {
+    url += `/${userId}` // Append single id to url
+  }
+  return request({
+    url,
+    method: 'patch',
+    data
+  })
+}
 // Delete user
 export function deleteUser (userId: number | number[]) {
+  let url: string = '/api/system/users'
+  let data;
+  if (Array.isArray(userId)){
+    data = { ids: userId } // Send multiple ids as JSON to body
+  } else {
+    url += `/${userId}` // Append single id to url
+  }
+  
   return request({
-    url: '/api/system/user' + userId,
-    method: 'delete'
+    url,
+    method: 'delete',
+    data
   })
 }

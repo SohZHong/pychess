@@ -1,18 +1,13 @@
 <template>
     <el-scrollbar>
         <el-menu>
-            <el-sub-menu
+            <side-bar-sub-menu
                 v-for="(item, index) in items"
                 :key="index"
                 :index="index.toString()"
-            >
-            <side-bar-sub-menu
-                :key="index"
-                :index="index.toString()"
-                :item="item.icon"
+                :item="item"
                 :title="item.title"
             />
-            </el-sub-menu>
         </el-menu>
     </el-scrollbar>
 </template>
@@ -23,8 +18,38 @@ import SideBarSubMenu from './SideBarSubMenu.vue'
 import { ref } from 'vue'
 
 const items = ref([
-  { icon: User, title: 'User' },
-  { icon: ChatLineSquare, title: 'Question' }
+  {
+    icon: User,
+    title: 'User',
+    children: [
+      {
+        path: '/users',
+        text: 'View All'
+      },
+      {
+        path: '/create',
+        text: 'Create'
+      },
+      {
+        path: '/delete',
+        text: 'Delete'
+      }
+    ]
+  },
+  {
+    icon: ChatLineSquare,
+    title: 'Question',
+    children: [
+      {
+        path: '/questions',
+        text: 'View All'
+      },
+      {
+        path: '/create',
+        text: 'Create'
+      }
+    ]
+  }
 ])
 </script>
 <style scoped>

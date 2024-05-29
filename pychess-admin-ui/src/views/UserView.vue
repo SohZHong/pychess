@@ -4,14 +4,22 @@
             Users
         </h2>
         <div class="button-container">
-            <el-button plain @click="showAddUserDialog=true">Add User</el-button>
             <el-button
-            plain
-            type="danger"
-            icon="el-icon-delete"
-            :disabled="!multipleUsersSelected"
-            @click="handleDeleteUser"
-            >Delete User</el-button>
+              type="primary"
+              @click="showAddUserDialog=true"
+              :icon="User"
+            >
+            Add User
+            </el-button>
+            <el-button
+              plain
+              type="danger"
+              :icon="Delete"
+              :disabled="!multipleUsersSelected"
+              @click="handleDeleteUser"
+            >
+            Delete User
+          </el-button>
         </div>
     </el-header>
     <el-main class="table-wrapper">
@@ -28,7 +36,7 @@
                 <el-button
                   type="text"
                   size="small"
-                  icon="el-icon-edit"
+                  :icon="Edit"
                   @click="handleDeleteUser(scope.row)"
                 >
                   Edit
@@ -36,7 +44,7 @@
                 <el-button
                   type="text"
                   size="small"
-                  icon="el-icon-delete"
+                  :icon="Delete"
                   @click.prevent="handleDeleteUser(scope.row)"
                 >
                   Remove
@@ -67,8 +75,9 @@ import { listAllUser, deleteUser } from '@/api/user'
 import { defineComponent, onMounted, ref } from 'vue'
 import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { User, Delete, Edit } from '@element-plus/icons-vue'
 
-interface User {
+interface UserProps {
   id: number;
   name: string;
   email: string;
@@ -100,7 +109,7 @@ export default defineComponent({
       loading.value = false
     }
     // Select checkbox function
-    const handleSelectionChange = (selection: User[]) => {
+    const handleSelectionChange = (selection: UserProps[]) => {
       console.log(selection)
       ids.value = selection.map(user => user.id)
       multipleUsersSelected.value = (selection.length > 1)
@@ -119,8 +128,8 @@ export default defineComponent({
         }).then(async () => {
         await deleteUser(userIds as number | number[])
         ElMessage({
-          type: 'info',
-          message: 'Operation Canceled'
+          type: 'success',
+          message: 'Operation Successful'
         })
         // Refresh table data
         getData()
@@ -144,7 +153,10 @@ export default defineComponent({
       showAddUserDialog,
       handleSelectionChange,
       getData,
-      handleDeleteUser
+      handleDeleteUser,
+      User,
+      Edit,
+      Delete
     }
   }
 })
@@ -154,6 +166,10 @@ export default defineComponent({
 .table-header {
   text-align: left;
   height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 10px;
 }
 
 .table-header h2 {
@@ -162,10 +178,6 @@ export default defineComponent({
 
 .el-main {
   padding: 0;
-}
-
-.table-header .button-container {
-  align-self: flex-end;
 }
 
 .table-wrapper .el-table {

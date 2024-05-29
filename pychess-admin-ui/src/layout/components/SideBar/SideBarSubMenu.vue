@@ -1,16 +1,15 @@
 <template>
-      <template v-if="!props.item.hidden">
-          <side-bar-item :icon='props.item' :title="props.title"/>
-      </template>
-      <el-menu-item-group>
-          <el-menu-item index="1-1">View All</el-menu-item>
-      </el-menu-item-group>
-      <el-menu-item-group>
-          <el-menu-item index="1-1">Create</el-menu-item>
-      </el-menu-item-group>
-      <el-menu-item-group>
-          <el-menu-item index="1-1">Delete</el-menu-item>
-      </el-menu-item-group>
+  <el-sub-menu ref="subMenu" :index="props.index">
+    <template #title>
+      <side-bar-item :icon="props.item.icon" :title="title"/>
+    </template>
+    <el-menu-item-group
+      v-for="(child, index) in props.item.children"
+      :key="child.path"
+    >
+    <el-menu-item :index="index" >{{ child.text }}</el-menu-item>
+    </el-menu-item-group>
+  </el-sub-menu>
 </template>
 
 <script lang="ts" setup>

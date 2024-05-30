@@ -32,7 +32,6 @@ const updateUser = async (user) => {
     password = ?,
     email = ?,
     status = ?,
-    del_flag = ?,
     update_by = ?,
     update_time = ?
     WHERE id = ?;
@@ -42,7 +41,6 @@ const updateUser = async (user) => {
         user.password,
         user.email,
         user.status,
-        user.delFlag,
         user.updateBy,
         new Date(user.updateTime),
         user.id

@@ -1,16 +1,16 @@
 import request from '@/utils/request'
 
-interface UserProps {
-  id: number,
+export interface UserProps {
+  id: number | null,
   name: string,
   password: string,
   email: string,
-  status: string,
-  delFlag: string,
-  createBy: string,
-  createTime: Date,
+  status: string | null,
+  delFlag: string | null,
+  createBy: string | null,
+  createTime: Date | null,
   updateBy: string,
-  updateTime: Date
+  updateTime: Date | null
 }
 
 // Retrieve all user

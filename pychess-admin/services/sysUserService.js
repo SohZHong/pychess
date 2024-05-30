@@ -1,9 +1,19 @@
 const { dbQuery } = require('../utils/dbUtils');
+const { encryptPassword } = require('../utils/passwordUtils')
 
 const listAllUser = async () => {
     const sql = `SELECT * FROM sys_user`;
     const sysUsers = await dbQuery(sql);
     return sysUsers;
+}
+
+const getSysUserByUsername = async (username) => {
+    const sql = `
+    SELECT * from sys_user
+    WHERE username = ?
+    `
+    const res = await dbQuery(sql, [username]);
+    return res;
 }
 
 const insertUser = async (user) => {
@@ -13,9 +23,10 @@ const insertUser = async (user) => {
     VALUES
     (?, ?, ?, ?, ?)
     `
+    const encryptedPassword = await encryptPassword(user.password)
     const params = [
         user.name,
-        user.password,
+        encryptedPassword,
         user.email,
         user.createBy,
         user.updateBy
@@ -92,4 +103,4 @@ const fullDeleteUser = async (userIds) => {
     return res;
 }
 
-module.exports = { listAllUser, insertUser, updateUser, delUser, fullDeleteUser }
+module.exports = { listAllUser, getSysUserByUsername, insertUser, updateUser, delUser, fullDeleteUser }

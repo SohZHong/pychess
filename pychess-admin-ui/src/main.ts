@@ -5,15 +5,12 @@ import router from './router'
 import 'element-plus/dist/index.css'
 import ElementPlus from 'element-plus'
 import './assets/stylesheets/style.css'
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import VueCookies from 'vue-cookies'
 
 const app = createApp(App)
-// Globally registering icons
-for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-  app.component(key, component)
-}
 // Importing components
 app.use(ElementPlus)
+app.use(VueCookies)
 app.use(router)
 app.use(store)
 app.mount('#app')

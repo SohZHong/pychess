@@ -22,6 +22,19 @@ class ResponseHelper {
   error(message = 'Internal Server Error', data = null) {
     return this.res.status(500).json(this.createResponse(500, message, data));
   }
+
+  setCookie(name, value, options = {}) {
+    this.res.cookie(name, value, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: parseInt(process.env.COOKIE_AGE),
+      ...options
+    });
+  }
+
+  clearCookie(name) {
+    this.res.clearCookie(name);
+  }
 }
 
 module.exports = ResponseHelper;

@@ -1,6 +1,13 @@
 <template>
     <div class="login">
-        <el-form :model="loginForm" :rules="loginRules" ref="ruleFormRef" label-position="left" @submit.prevent="onSubmit" label-width="auto" status-icon>
+        <el-form
+        :model="loginForm"
+        :rules="loginRules"
+        ref="ruleFormRef"
+        label-position="left"
+        @submit.prevent="handleSubmitForm(ruleFormRef)"
+        label-width="auto"
+        status-icon>
             <el-form-item label="Username" prop="username">
                 <el-input
                     v-model="loginForm.username"
@@ -17,7 +24,7 @@
                 />
             </el-form-item>
             <el-form-item>
-                <el-button v-loading="loading" size="medium" type="primary" @click.prevent="onSubmit">
+                <el-button v-loading="loading" size="large" type="primary" @click.prevent="handleSubmitForm(ruleFormRef)">
                     <!-- Show different text based on status -->
                     <span v-if="!loading">Login</span>
                     <span v-else>Logging in...</span>
@@ -42,30 +49,30 @@ interface LoginRuleForm {
 }
 
 export default {
-  setup() {
+  setup () {
     const store = useStore()
+    const router = useRouter()
     // loading status
     const loading = ref(false)
-    const loginForm = reactive({
+    const loginForm = reactive<LoginRuleForm>({
       username: '',
       password: ''
     })
-    const ruleFormRef = ref<FormInstance>()
     const loginRules = reactive<FormRules<LoginRuleForm>>({
       username: [
-        { required: true, trigger: "blur", message: "Please enter username" }
+        { required: true, trigger: 'blur', message: 'Please enter username' }
       ],
       password: [
-        { required: true, trigger: "blur", message: "Please enter password" }
+        { required: true, trigger: 'blur', message: 'Please enter password' }
       ]
     })
+    const ruleFormRef = ref<FormInstance>()
     // Login
-    const onSubmit = async (formEl: FormInstance | undefined) => {
+    const handleSubmitForm = async (formEl: FormInstance | undefined) => {
       if (!formEl) return
       //  Validate all fields
       await formEl.validate(async (valid) => {
         if (valid) {
-          const router = useRouter()
           loading.value = true
           await store.dispatch('Login', {
             username: loginForm.username,
@@ -74,6 +81,7 @@ export default {
             // Navigate user to homepage
             router.push('/user')
           }).catch(err => {
+            loading.value = false
             console.error(err)
           })
         } else {
@@ -90,7 +98,7 @@ export default {
       loginForm,
       ruleFormRef,
       loginRules,
-      onSubmit
+      handleSubmitForm
     }
   }
 }

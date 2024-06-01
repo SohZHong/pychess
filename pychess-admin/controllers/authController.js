@@ -32,19 +32,22 @@ const loginSysUser = async(req, res) => {
         const { username, password } = req.body;
         const user = await getSysUserByUsername(username);
         // User not found
-        if (!user) response.error('Username does not exist!');
-        // If found, compare password
-        const isPasswordValid = await comparePassword(password, user.password);
-        // Invalid password
-        if (!isPasswordValid) {
-            response.error('Invalid password!');
+        if (!user) {
+            response.error('Username does not exist!');
         } else {
-            // Generate token
-            const token = generateToken({ id: user.id, username: user.username });
-            // Set cookie
-            response.setCookie('Token', token);
-            // Send success message
-            response.success('Login Successful', token);
+            // If found, compare password
+            const isPasswordValid = await comparePassword(password, user.password);
+            // Invalid password
+            if (!isPasswordValid) {
+                response.error('Invalid password!');
+            } else {
+                // Generate token
+                const token = generateToken({ id: user.id, username: user.username });
+                // Set cookie
+                response.setCookie('Token', token);
+                // Send success message
+                response.success('Login Successful');
+            }
         }
     } catch (error) {
         console.error(error);

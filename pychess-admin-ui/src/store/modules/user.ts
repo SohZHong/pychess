@@ -24,31 +24,34 @@ const user = {
     // Define the type for the context parameter
     async Login ({ commit }: ActionContext<UserStateProps, StoreOptions<UserStateProps>>, userInfo: { username: string; password: string }): Promise<void> {
       const { username, password } = userInfo
-      return new Promise(async (resolve, reject) => {
-        // Example response:
-        // {
-        //   "code": 200,
-        //   "message": "Login Successful",
-        //   "data": <token string>
-        // }
-        await login(username, password).then(res => {
-          const code = res.data.code
-          // If login success
-          if (code === 200){
-            commit('SET_NAME', username)
-            return resolve()
-          } else {
-            return reject(res.data.message)
-          }
-        }).catch(error => {
-          reject(error)
-        })
-      })
+      const response = await login(username, password)
+      const { code, message } = response.data
+      console.log(code)
+      console.log(message)
+      if (code === 200) {
+        commit('SET_NAME', username)
+        return Promise.resolve()
+      } else {
+        return Promise.reject(message)
+        // login(username, password).then((res :AxiosResponse<LoginResponse>) => {
+        //   const { code, message } = res.data
+        //   console.log(code)
+        //   console.log(message)
+        //   if (code === 200) {
+        //     // Set the name in the store
+        //     commit('SET_NAME', username)
+        //     return resolve()
+        //   } else {
+        //     return reject(message)
+        //   }
+        // }).catch(error => {
+        //   reject(error)
+      } // })
     },
     Logout ({ commit }: ActionContext<UserStateProps, StoreOptions<UserStateProps>>): Promise<void> {
       // Call logout API and remove all states upon success
-      return new Promise(async (resolve, reject) => {
-        await logout().then(() => {
+      return new Promise((resolve, reject) => {
+        logout().then(() => {
           commit('RESET_STATE')
           resolve()
         }).catch(error => {

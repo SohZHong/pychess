@@ -200,13 +200,13 @@ export default defineComponent({
     })
     // Get table data
     const getData = async () => {
-      const data = await listAllUser('')
-      tableData.value = data.data
+      const response = await listAllUser('')
+      const { data } = response.data
+      tableData.value = data
       loading.value = false
     }
     // Select checkbox function
     const handleSelectionChange = (selection: UserProps[]) => {
-      console.log(selection)
       ids.value = selection.map(user => user.id)
       multipleUsersSelected.value = (selection.length > 1)
     }

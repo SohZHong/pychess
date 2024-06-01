@@ -5,7 +5,7 @@ const checkTokenMiddleware = require('../middleware/authToken');
 const router = express.Router();
 
 // Route to login
-router.get('/login', loginSysUser);
+router.post('/login', loginSysUser);
 // Route to list all users
 router.get('/users', checkTokenMiddleware, getAllSysUsers);
 // Route to add new user

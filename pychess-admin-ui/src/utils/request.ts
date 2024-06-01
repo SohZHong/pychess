@@ -14,16 +14,6 @@ const service = axios.create({
   withCredentials: true
 })
 
-// Request interceptor
-service.interceptors.request.use(config => {
-  // Adding token to request
-  // const token = localStorage.getItem('authToken')
-  // if (token) {
-  //   config.headers.Authorization = `Bearer ${token}`
-  // }
-  return config
-})
-
 // Response interceptor
 // Response JSON example: { code: 200, message: "Request Successful }"
 service.interceptors.response.use(response => {
@@ -44,7 +34,7 @@ service.interceptors.response.use(response => {
     })
     return Promise.reject(new Error('Login Expired! Please relogin'))
   } else {
-    return response.data
+    return response
   }
 },
 (error) => {

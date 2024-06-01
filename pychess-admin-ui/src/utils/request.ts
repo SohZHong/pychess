@@ -9,16 +9,18 @@ const service = axios.create({
   // Change later
   baseURL: 'http://localhost:3000',
   // 10 seconds timeout
-  timeout: 10000
+  timeout: 10000,
+  // Support cookies
+  withCredentials: true
 })
 
 // Request interceptor
 service.interceptors.request.use(config => {
   // Adding token to request
-  const token = localStorage.getItem('authToken')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
+  // const token = localStorage.getItem('authToken')
+  // if (token) {
+  //   config.headers.Authorization = `Bearer ${token}`
+  // }
   return config
 })
 

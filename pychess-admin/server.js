@@ -32,7 +32,7 @@ app.use(cookieParser());
 app.use(session({
     secret: process.env.SESSION_SECRET,
     cookie: {
-        maxAge: parseInt(process.env.COOKIE_AGE, 10), // Ensure COOKIE_AGE is correctly parsed
+        maxAge: parseInt(process.env.COOKIE_AGE, 10),
         secure: process.env.NODE_ENV === 'production' // Only true for HTTPS
     },
     saveUninitialized: false, // To not save uninitialized sessions

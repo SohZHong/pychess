@@ -10,10 +10,16 @@ const listAllUser = async () => {
 const getSysUserByUsername = async (username) => {
     const sql = `
     SELECT * from sys_user
-    WHERE username = ?
+    WHERE name = ?
     `
     const res = await dbQuery(sql, [username]);
-    return res;
+    return res[0];
+}
+
+const checkUsernameUnique = async (username) => {
+    const user = await getSysUserByUsername(username)
+    // If username is found
+    return (user == null)
 }
 
 const insertUser = async (user) => {
@@ -103,4 +109,4 @@ const fullDeleteUser = async (userIds) => {
     return res;
 }
 
-module.exports = { listAllUser, getSysUserByUsername, insertUser, updateUser, delUser, fullDeleteUser }
+module.exports = { listAllUser, getSysUserByUsername, checkUsernameUnique, insertUser, updateUser, delUser, fullDeleteUser }

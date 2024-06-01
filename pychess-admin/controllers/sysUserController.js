@@ -1,4 +1,4 @@
-const { listAllUser, insertUser, updateUser, delUser, fullDeleteUser } = require('../services/sysUserService');
+const { listAllUser, checkUsernameUnique, insertUser, updateUser, delUser, fullDeleteUser } = require('../services/sysUserService');
 const ResponseHelper = require('../models/ResponseHelper');
 
 // List All System Users
@@ -17,8 +17,14 @@ const addSysUser = async (req, res) => {
     const response = new ResponseHelper(res);
     try {
         const newUser = req.body;
-        await insertUser(newUser);
-        response.success('User Inserted Successfully');
+        const isUsernameUnique = checkUsernameUnique(newUser.name);
+        if (isUsernameUnique){
+            await insertUser(newUser);
+            response.success('User Inserted Successfully');
+        } else {
+            response.error('Username already exists');
+        }
+        
     } catch (error) {
         console.error(error);
         response.error('Error adding new system users');

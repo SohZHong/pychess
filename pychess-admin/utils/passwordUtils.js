@@ -3,7 +3,7 @@ const saltRounds = 10 // Typically a value between 10 and 12
 
 const encryptPassword = async (password) => {
     try {
-        // Generate unique salt for each password has
+        // Generate unique salt for each password
         const salt = await bcrypt.genSalt(saltRounds);
         // 'hash' contains the hashed password
         const hash = await bcrypt.hash(password, salt);
@@ -16,7 +16,7 @@ const encryptPassword = async (password) => {
 
 const comparePassword = async (inputPassword, dbPassword) => {
     try {
-        // Compare different hashes
+        // Compare plain string with hashed password in database
         const match = await bcrypt.compare(inputPassword, dbPassword);
         return match;
     } catch (err) {

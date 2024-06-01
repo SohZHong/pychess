@@ -23,6 +23,10 @@ class ResponseHelper {
     return this.res.status(500).json(this.createResponse(500, message, data));
   }
 
+  unauthorize(message = 'Unauthorized Access, please login!', data = null) {
+    return this.res.status(401).json(this.createResponse(401, message, data));
+  }
+
   setCookie(name, value, options = {}) {
     this.res.cookie(name, value, {
       httpOnly: true,

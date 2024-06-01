@@ -1,46 +1,60 @@
-import { getToken, setToken } from '@/utils/auth'
-import { VueCookies } from 'vue-cookies'
-import { login } from '@/api/login'
+import { login, logout } from '@/api/login'
 import { ActionContext, StoreOptions } from 'vuex'
-import { AxiosResponse } from 'axios'
 
 // Define the UserStateProps interface
 interface UserStateProps {
-  token: VueCookies | null;
   name: string | null;
-}
-
-// Define the LoginResponse interface
-interface LoginResponse {
-  token: VueCookies;
 }
 
 // Define the user module
 const user = {
   state: {
-    token: getToken(),
     name: null
   } as UserStateProps,
   mutations: {
-    SET_TOKEN: (state: UserStateProps, token: VueCookies) => {
-      state.token = token
-    },
     SET_NAME: (state: UserStateProps, name: string) => {
       state.name = name
+    },
+    RESET_STATE: (state: UserStateProps) => {
+      state.name = null
+      state.name = null
     }
   },
   actions: {
     // Define the type for the context parameter
     async Login ({ commit }: ActionContext<UserStateProps, StoreOptions<UserStateProps>>, userInfo: { username: string; password: string }): Promise<void> {
       const { username, password } = userInfo
-      try {
-        const res: AxiosResponse<LoginResponse> = await login(username, password)
-        const token = res.data.token
-        setToken(token)
-        commit('SET_TOKEN', token)
-      } catch (error) {
-        return Promise.reject(error)
-      }
+      return new Promise(async (resolve, reject) => {
+        // Example response:
+        // {
+        //   "code": 200,
+        //   "message": "Login Successful",
+        //   "data": <token string>
+        // }
+        await login(username, password).then(res => {
+          const code = res.data.code
+          // If login success
+          if (code === 200){
+            commit('SET_NAME', username)
+            return resolve()
+          } else {
+            return reject(res.data.message)
+          }
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    Logout ({ commit }: ActionContext<UserStateProps, StoreOptions<UserStateProps>>): Promise<void> {
+      // Call logout API and remove all states upon success
+      return new Promise(async (resolve, reject) => {
+        await logout().then(() => {
+          commit('RESET_STATE')
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
     }
   }
 }

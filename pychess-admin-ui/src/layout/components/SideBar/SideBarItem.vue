@@ -16,6 +16,10 @@ const props = defineProps({
   title: {
     type: String,
     default: ''
+  },
+  path: {
+    type: String,
+    default: null
   }
 })
 </script>

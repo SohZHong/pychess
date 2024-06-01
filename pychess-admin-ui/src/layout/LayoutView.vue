@@ -4,7 +4,7 @@
         <app-header />
         </el-header>
         <el-container class="app-container">
-            <el-aside>
+            <el-aside v-if="!sidebar.hide">
                 <side-bar />
             </el-aside>
             <el-container>
@@ -14,19 +14,14 @@
     </el-container>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { useStore } from 'vuex'
 import AppHeader from './components/AppHeader.vue'
 import AppMain from './components/AppMain.vue'
 import SideBar from './components/SideBar/SideBarView.vue'
 
-export default {
-  name: 'LayoutView',
-  components: {
-    AppHeader,
-    AppMain,
-    SideBar
-  }
-}
+const store = useStore()
+const sidebar = store.state.app.sidebar
 </script>
 
 <style scoped>

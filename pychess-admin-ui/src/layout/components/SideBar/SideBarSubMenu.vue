@@ -1,13 +1,16 @@
 <template>
-  <el-sub-menu ref="subMenu" :index="props.index">
+  <el-menu-item :index="props.index" v-if="!props.item.children" @click="handleClick(props)">
+    <side-bar-item :icon="props.item.icon" :title="props.title" :path="props.path"/>
+  </el-menu-item>
+  <el-sub-menu v-else :index="props.index">
     <template #title>
       <side-bar-item :icon="props.item.icon" :title="title"/>
     </template>
     <el-menu-item-group
-      v-for="(child, index) in props.item.children"
+      v-for="(child) in props.item.children"
       :key="child.path"
     >
-    <el-menu-item :index="index" >{{ child.text }}</el-menu-item>
+    <el-menu-item :index="child.path" @click="handleClick(child)">{{ child.text }}</el-menu-item>
     </el-menu-item-group>
   </el-sub-menu>
 </template>
@@ -28,9 +31,15 @@ const props = defineProps({
     type: String,
     required: true
   },
-  basePath: {
+  path: {
     type: String,
-    default: ''
+    default: null
   }
 })
+
+const emits = defineEmits(['update:route'])
+
+const handleClick = (child: { path: string }) => {
+  emits('update:route', child.path)
+}
 </script>

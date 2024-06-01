@@ -59,6 +59,7 @@ const loginSysUser = async(req, res) => {
 const logout = async(req, res) => {
     const response = new ResponseHelper(res);
     req.session.destroy();
+    res.clearCookie('Token')
     response.success('Logout success')
 }
 

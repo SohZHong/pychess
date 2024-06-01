@@ -200,10 +200,14 @@ export default defineComponent({
     })
     // Get table data
     const getData = async () => {
-      const response = await listAllUser('')
-      const { data } = response.data
-      tableData.value = data
-      loading.value = false
+      try {
+        const response = await listAllUser('')
+        const { data } = response.data
+        tableData.value = data
+        loading.value = false
+      } catch (error) {
+        console.error(error)
+      }
     }
     // Select checkbox function
     const handleSelectionChange = (selection: UserProps[]) => {

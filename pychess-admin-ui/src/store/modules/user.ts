@@ -13,7 +13,6 @@ const user: Module<UserModuleState, State> = {
     },
     RESET_STATE: (state: UserModuleState) => {
       state.name = null
-      state.name = null
     }
   },
   actions: {

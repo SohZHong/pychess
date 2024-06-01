@@ -5,6 +5,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const sysRouter = require('./routes/sysRouter');
+const { logout } = require('./controllers/authController');
 const app = express();
 const port = process.env.PORT || 3000;
 const origin = `${process.env.DOMAIN}:${process.env.DOMAIN_PORT}`;
@@ -59,6 +60,8 @@ app.get('/test', (req, res) => {
 
 // Register routes
 app.use('/api/system', sysRouter);
+// Logout route
+app.post('/api/logout', logout)
 
 // Debugging: Catch unhandled routes
 app.use((req, res, next) => {

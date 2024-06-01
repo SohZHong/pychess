@@ -29,9 +29,6 @@
                     <span v-if="!loading">Login</span>
                     <span v-else>Logging in...</span>
                 </el-button>
-                <div style="float: right;">
-                    Not a Member?<router-link class="linked-text" :to="'/register'">Register Now</router-link>
-                </div>
             </el-form-item>
         </el-form>
     </div>

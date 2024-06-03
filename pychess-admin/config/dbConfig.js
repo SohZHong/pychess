@@ -1,7 +1,7 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
 // Create connection to database
-const connection = mysql.createConnection({
+const connection = await mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'Syst3mAdm!n',

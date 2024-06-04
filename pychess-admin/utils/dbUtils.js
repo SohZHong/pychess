@@ -1,47 +1,101 @@
-const { connection } = require('../config/dbConfig');
+const { pool } = require('../config/dbConfig');
 
-const dbQuery = async (sql, params = []) => {
+// High order function for database transaction handling
+const transaction = async (operation) => {
+    const connection = await pool.getConnection();
     try {
         await connection.beginTransaction();
-        const result = connection.query(sql, params);
+        const result = await operation(connection);
         await connection.commit();
-        await connection.end();
-        const rows = Object.values(JSON.parse(JSON.stringify(result)));
-        return Promise.resolve(rows);
+        return Promise.resolve(result);
     } catch (err) {
-        // Reverse changes made
         await connection.rollback();
-        await connection.end();
-        console.log('Error executing query: ', err)
-        return Promise.reject(err);
+        console.log('Error executing query: ', err);
+        return Promise.reject(err)
+    } finally {
+        connection.release();
     }
 };
 
+const dbQuery = async (sql, params = []) => {
+    return transaction(async (connection) => {
+        const [result, fields] = await connection.query(sql, params);
+        const rows = result; // Get row results
+        const insertId = result.insertId; // Get the insertId
+        return { rows, insertId };
+    });
+};
+
+// const dbQuery = async (sql, params = []) => {
+//     const connection = await pool.getConnection();
+//     try {
+//         await connection.beginTransaction();
+//         const [result, fields] = await connection.query(sql, params);
+//         await connection.commit();
+//         const rows = result[0]; // Get row results
+//         const insertId = result.insertId; // Get the insertId
+//         return Promise.resolve({rows, insertId});
+//     } catch (err) {
+//         // Reverse changes made
+//         await connection.rollback();
+//         console.log('Error executing query: ', err)
+//         return Promise.reject(err);
+//     } finally {
+//         connection.release();
+//     }
+// };
+
 // Function to execute multiple queries at once
 const dbMultiQuery = async (queries, params) => {
-    // Validate if length of parameters matches queries
     if (queries.length !== params.length) {
         return Promise.reject('Provided parameters do not match the amount of queries');
-    };
-    try {
-        await connection.beginTransaction();
-        const queryPromises = [];
+    }
 
+    return transaction(async (connection) => {
         // Execute each query within array
-        queries.forEach((query, index) => {
-            queryPromises.push(connection.query(query, params[index]));
+        const queryPromises = queries.map((query, index) => {
+            return connection.query(query, params[index]);
         });
 
-        const results = Promise.all(queryPromises);
-        await connection.commit();
-        await connection.end();
-        const rows = Object.values(JSON.parse(JSON.stringify(results)));
-        return Promise.resolve(rows);
-    } catch (err) {
-        await connection.rollback();
-        await connection.end();
-        return Promise.reject(err)
-    }
-}
+        const results = await Promise.all(queryPromises);
 
-module.exports = { dbQuery, dbMultiQuery }
+        // Extract insertId and rows from each query result
+        const queryResults = results.map(([result]) => ({
+            rows: result,
+            insertId: result.insertId
+        }));
+        
+        return queryResults;
+    });
+};
+// const dbMultiQuery = async (queries, params) => {
+//     const connection = await pool.getConnection();
+//     // Validate if length of parameters matches queries
+//     if (queries.length !== params.length) {
+//         return Promise.reject('Provided parameters do not match the amount of queries');
+//     };
+//     try {
+//         await connection.beginTransaction();
+
+//         // Execute each query within array
+//         const queryPromises = queries.map((query, index) => {
+//             return connection.query(query, params[index]);
+//         });
+
+//         const results = await Promise.all(queryPromises);
+//         await connection.commit();
+//         // Extract insertId and rows from each query result
+//         const queryResults = results.map(([result]) => ({
+//             rows: result,
+//             insertId: result.insertId
+//         }));
+//         return Promise.resolve(queryResults);
+//     } catch (err) {
+//         await connection.rollback();    
+//         return Promise.reject(err);
+//     } finally {
+//         connection.release();
+//     }
+// }
+
+module.exports = { transaction, dbQuery, dbMultiQuery }

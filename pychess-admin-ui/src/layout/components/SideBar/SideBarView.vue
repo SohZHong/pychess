@@ -1,7 +1,7 @@
 <template>
-  <el-scrollbar>
+  <el-scrollbar :class="{ mobile: isCollapse }">
     <el-menu
-      :collapse="isCollapsed"
+      :collapse="isCollapse"
       :default-active="activeMenu"
       :active-text-color="activeTextColor"
     >
@@ -19,14 +19,14 @@
 </template>
 
 <script lang="ts" setup>
-import { User, ChatLineSquare } from '@element-plus/icons-vue'
+import { User, ChatLineSquare, Setting } from '@element-plus/icons-vue'
 import SideBarSubMenu from './SideBarSubMenu.vue'
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
 
 const store = useStore()
-const isCollapsed = computed(() => !store.state.app.sidebar.open)
+const isCollapse = computed(() => !(store.state.app.device === 'desktop'))
 const route = useRoute()
 const router = useRouter()
 
@@ -51,11 +51,16 @@ const items = ref([
   {
     icon: ChatLineSquare,
     title: 'Question',
-    path: '/question',
+    path: '/question'
+  },
+  {
+    icon: Setting,
+    title: 'Settings',
+    path: '/setting',
     children: [
       {
-        path: '/questions',
-        text: 'View All'
+        path: '/profile',
+        text: 'Profile'
       },
       {
         path: '/create',
@@ -74,5 +79,9 @@ const items = ref([
 .el-scrollbar {
   border-right: 1px solid var(--el-menu-border-color);
   min-height: 100%;
+}
+
+.el-scrollbar.mobile {
+  width: fit-content;
 }
 </style>

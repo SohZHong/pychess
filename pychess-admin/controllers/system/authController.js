@@ -1,7 +1,7 @@
-const ResponseHelper = require('../models/ResponseHelper');
-const { comparePassword } = require('../utils/passwordUtils')
-const { getSysUserByUsername } = require('../services/sysUserService');
-const { generateToken } = require('../utils/tokenUtils');
+const ResponseHelper = require('../../models/ResponseHelper');
+const { comparePassword } = require('../../utils/passwordUtils')
+const { getSysUserByUsername } = require('../../services/sysUserService');
+const { generateToken } = require('../../utils/tokenUtils');
 
 
 // Register

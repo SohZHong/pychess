@@ -19,13 +19,13 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
-    path: '/about',
+    path: '/question',
     component: LayoutView,
     children: [
       {
         path: '',
-        name: 'about',
-        component: () => import('@/views/AboutView.vue')
+        name: 'question',
+        component: () => import('@/views/QuestionView.vue')
       }
     ]
   },

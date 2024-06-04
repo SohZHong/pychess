@@ -26,13 +26,13 @@
       <!-- Display User Data -->
         <el-scrollbar height="600px">
             <el-table v-loading="loading" stripe :data="tableData" @selection-change="handleSelectionChange">
-              <el-table-column fixed type="selection" width="50"  />
+              <el-table-column type="selection" width="50"  />
               <el-table-column :prop="'name'" :label="'Name'"/>
               <el-table-column :prop="'email'" :label="'Email'"/>
               <el-table-column :prop="'status'" :label="'Status'"/>
               <el-table-column :prop="'createTime'" :label="'Create Time'"/>
               <!-- Buttons -->
-              <el-table-column fixed="right" :label="'Actions'" #default="scope">
+              <el-table-column :label="'Actions'" #default="scope">
                 <el-button
                   type="text"
                   size="small"
@@ -98,7 +98,7 @@
           </el-form-item>
         </el-row>
         <el-row>
-          <el-form-item>
+          <el-form-item class="button-container" :class="mobile">
             <el-button type="primary" @click="handleSubmitForm(ruleFormRef)">Confirm</el-button>
             <el-button @click="handleResetForm(ruleFormRef)">Cancel</el-button>
           </el-form-item>
@@ -113,6 +113,7 @@ import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox, FormInstance, FormRules } from 'element-plus'
 import { User, Delete, Edit } from '@element-plus/icons-vue'
 import { InternalRuleItem } from 'async-validator'
+import { useStore } from 'vuex'
 
 interface UserProps {
   id: number;
@@ -155,6 +156,9 @@ export default defineComponent({
     const userFormTitle = ref('')
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/
     const ruleFormRef = ref<FormInstance>()
+    const store = useStore()
+    const mobile = store.state.app.device
+    const user = store.state.user.name
 
     const validatePass = (rule: InternalRuleItem, value: string, callback: (error?: string | Error | undefined) => void) => {
       if (value === '') {
@@ -276,8 +280,8 @@ export default defineComponent({
               password: userForm.password,
               email: userForm.email,
               status: userForm.status,
-              createBy: 'admin',
-              updateBy: 'admin',
+              createBy: user,
+              updateBy: user,
               id: null,
               delFlag: null,
               createTime: null,
@@ -296,7 +300,7 @@ export default defineComponent({
               email: userForm.email,
               status: userForm.status,
               updateTime: new Date(),
-              updateBy: 'admin',
+              updateBy: user,
               createBy: null,
               delFlag: null,
               createTime: null
@@ -339,6 +343,7 @@ export default defineComponent({
       ruleFormRef,
       showUserDialog,
       userFormRules,
+      mobile,
       handleSelectionChange,
       getData,
       handleAddUser,
@@ -374,5 +379,11 @@ export default defineComponent({
 
 .table-wrapper .el-table {
   width: 100%;
+}
+
+.button-container.mobile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 </style>

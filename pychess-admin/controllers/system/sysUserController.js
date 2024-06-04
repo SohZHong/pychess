@@ -1,5 +1,5 @@
-const { listAllUser, checkUsernameUnique, insertUser, updateUser, delUser, fullDeleteUser } = require('../services/sysUserService');
-const ResponseHelper = require('../models/ResponseHelper');
+const { listAllUser, checkUsernameUnique, insertUser, updateUser, delUser, fullDeleteUser } = require('../../services/sysUserService');
+const ResponseHelper = require('../../models/ResponseHelper');
 
 // List All System Users
 const getAllSysUsers = async (req, res) => {

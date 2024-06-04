@@ -4,7 +4,7 @@ const { encryptPassword } = require('../utils/passwordUtils')
 const listAllUser = async () => {
     const sql = `SELECT * FROM sys_user`;
     const sysUsers = await dbQuery(sql);
-    return sysUsers;
+    return sysUsers.rows;
 }
 
 const getSysUserByUsername = async (username) => {
@@ -13,7 +13,7 @@ const getSysUserByUsername = async (username) => {
     WHERE name = ?
     `
     const res = await dbQuery(sql, [username]);
-    return res[0];
+    return res.rows[0];
 }
 
 const checkUsernameUnique = async (username) => {
@@ -38,7 +38,7 @@ const insertUser = async (user) => {
         user.updateBy
     ]
     const res = await dbQuery(sql, params);
-    return res;
+    return res.rows;
 }
 
 const updateUser = async (user) => {
@@ -63,7 +63,7 @@ const updateUser = async (user) => {
         user.id
     ];
     const res = await dbQuery(sql, params);
-    return res;
+    return res.rows;
 }   
 
 const delUser = async (userIds) => {
@@ -86,7 +86,7 @@ const delUser = async (userIds) => {
         `
     }
     const res = await dbQuery(sql, params);
-    return res;
+    return res.rows;
 }
 
 
@@ -106,7 +106,7 @@ const fullDeleteUser = async (userIds) => {
         `
     }
     const res = await dbQuery(sql, params);
-    return res;
+    return res.rows;
 }
 
 module.exports = { listAllUser, getSysUserByUsername, checkUsernameUnique, insertUser, updateUser, delUser, fullDeleteUser }

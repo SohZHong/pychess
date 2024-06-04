@@ -4,7 +4,7 @@
         <app-header />
         </el-header>
         <el-container class="app-container">
-            <el-aside v-if="!sidebar.hide">
+            <el-aside :class="{ mobile: isMobile }">
                 <side-bar />
             </el-aside>
             <el-container>
@@ -19,9 +19,12 @@ import { useStore } from 'vuex'
 import AppHeader from './components/AppHeader.vue'
 import AppMain from './components/AppMain.vue'
 import SideBar from './components/SideBar/SideBarView.vue'
+import { computed } from 'vue'
+import { useResizeHandler } from '@/layout/mixin/resizeHandler'
 
 const store = useStore()
-const sidebar = store.state.app.sidebar
+const isMobile = computed(() => !(store.state.app.device === 'desktop'))
+useResizeHandler()
 </script>
 
 <style scoped>
@@ -35,5 +38,9 @@ const sidebar = store.state.app.sidebar
 .navbar {
     position: 'sticky';
     width: 100%;
+}
+
+.el-aside.mobile {
+    width: fit-content;
 }
 </style>

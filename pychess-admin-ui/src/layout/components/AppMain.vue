@@ -21,7 +21,7 @@ const key = computed(() => route.fullPath)
 
 <style scoped>
 .app-main {
-display: flex;
-flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 </style>

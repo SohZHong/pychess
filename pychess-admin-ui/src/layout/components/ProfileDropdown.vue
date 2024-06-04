@@ -22,8 +22,7 @@ export default defineComponent({
   name: 'ProfileDropdown',
   setup () {
     const store = useStore()
-    console.log(store.state)
-    const username = computed(() => store.state.name)
+    const username = computed(() => store.state.user.name)
     const router = useRouter()
     // Handle logout button
     const handleLogout = async () => {

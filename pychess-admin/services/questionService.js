@@ -140,12 +140,12 @@ const updateQuestion = async (question) => {
 
 // Example JSON
 // {
-//     "questionIds": [1, 2, 3]
+//     "ids": [1, 2, 3]
 // }
 const deleteQuestion = async (questionIds) => {
-    // Convert single ID to array for consistent processing
-    const params = Array.isArray(questionIds) ? questionIds : [questionIds];
-    // Step 3: Delete questions
+    // Convert to array for consistent processing
+    const params = [questionIds];
+    // Delete questions
     const sql = `
         DELETE FROM question
         WHERE id IN (?);

@@ -33,10 +33,26 @@ router.post('/questions', checkTokenMiddleware, addQuestion);
 router.post('/questions/chess', checkTokenMiddleware, addChessPiece);
 // Route to update question and chess piece
 router.put('/questions', checkTokenMiddleware, modifyQuestion);
-router.put('/questions/chess', checkTokenMiddleware, modifyChessPiece);
+router.patch('/questions/chess', checkTokenMiddleware, modifyChessPiece);
 // Route to delete questions and chess piece
-router.delete('/questions/:id', checkTokenMiddleware, fullDeleteQuestion); // Single delete
-router.delete('/questions/chess/:id', checkTokenMiddleware, fullDeleteChessPiece); // Single delete
+router.delete('/questions/:id', checkTokenMiddleware, (req, res, next) => {
+    // Added checks to prevent matching other routes
+    const id = parseInt(req.params.id, 10);
+    if (!isNaN(id)) {
+        fullDeleteQuestion(req, res, next);
+    } else {
+        next('route');
+    }
+});
+router.delete('/questions/chess/:id', checkTokenMiddleware, (req, res, next) => {
+    // Added checks to prevent matching other routes
+    const id = parseInt(req.params.id, 10);
+    if (!isNaN(id)) {
+        fullDeleteChessPiece(req, res, next);
+    } else {
+        next('route');
+    }
+});
 router.delete('/questions', checkTokenMiddleware, fullDeleteQuestion); // Batch delete
 router.delete('/questions/chess', checkTokenMiddleware, fullDeleteChessPiece); // Batch delete
 

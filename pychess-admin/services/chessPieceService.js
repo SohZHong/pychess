@@ -44,14 +44,14 @@ const updateChessPiece = async (chess) => {
 
 const deleteChessPiece = async (chessIds) => {
     // Convert single ID to array for consistent processing
-    const params = Array.isArray(chessIds) ? chessIds : [chessIds];
-    // Step 3: Delete questions
+    const params = [chessIds];
+    // Delete chess piece
     const sql = `
         DELETE FROM chess_piece
         WHERE id IN (?);
     `;
-    const query = dbQuery(sql, params);
-    return query.rows;
+    const res = dbQuery(sql, params);
+    return res;
 }
 
 module.exports = { listAllChessPiece, insertChessPiece, updateChessPiece, deleteChessPiece }

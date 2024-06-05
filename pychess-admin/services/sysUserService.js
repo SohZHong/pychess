@@ -91,20 +91,11 @@ const delUser = async (userIds) => {
 
 
 const fullDeleteUser = async (userIds) => {
-    let sql;
     const params = [userIds]
-    // Check if single or multiple ids
-    if (Array.isArray(userIds)){
-        sql = `
+    const sql = `
         DELETE FROM sys_user 
         WHERE id in (?);
         `
-    } else {
-        sql = `
-        DELETE FROM sys_user
-        WHERE id = ?;
-        `
-    }
     const res = await dbQuery(sql, params);
     return res.rows;
 }

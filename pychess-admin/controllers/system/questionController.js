@@ -65,7 +65,7 @@ const fullDeleteQuestion = async(req, res) => {
         if (!questionIds) {
             questionIds = req.body.ids;
         }
-        await deleteQuestion(userIds);
+        await deleteQuestion(questionIds);
         response.success('Question Deleted Successfully');
     } catch (error) {
         console.error(error);

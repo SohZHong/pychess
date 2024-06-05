@@ -2,31 +2,48 @@ const { dbQuery, dbMultiQuery, transaction } = require('../utils/dbUtils');
 
 const listAllQuestionWithAnswers = async () => {
     const sql = `
-    SELECT 
-    cp.name AS chess_piece, 
-    q.text AS question_text, 
-    qt.type AS question_type,
-    MAX(CASE WHEN r.rn = 1 THEN a.answer ELSE NULL END) AS answer1,
-    MAX(CASE WHEN r.rn = 2 THEN a.answer ELSE NULL END) AS answer2,
-    MAX(CASE WHEN r.rn = 3 THEN a.answer ELSE NULL END) AS answer3,
-    MAX(CASE WHEN r.rn = 4 THEN a.answer ELSE NULL END) AS answer4
+    SELECT
+        q.id,
+        cp.id AS chess_piece_id,
+        cp.name AS chess_piece, 
+        q.text AS question_text,
+        qt.id AS question_type_id,
+        qt.type AS question_type,
+        a.id AS answer_id,
+        a.answer AS answer_text
     FROM question q
     JOIN chess_piece cp ON q.chess_piece_id = cp.id
     JOIN question_type qt ON q.question_type_id = qt.id
     JOIN question_to_answer q2a ON q.id = q2a.question_id
     JOIN answer a ON q2a.answer_id = a.id
-    JOIN (
-        SELECT 
-            question_id, 
-            answer_id,
-            ROW_NUMBER() OVER (PARTITION BY question_id ORDER BY answer_id) AS rn
-        FROM question_to_answer
-    ) r ON q2a.question_id = r.question_id AND q2a.answer_id = r.answer_id
-    GROUP BY cp.name, q.text, qt.type
-    ;
+    ORDER BY q.id, a.id;
     `;
     const questionDetails = await dbQuery(sql);
-    return questionDetails.rows
+    const questionsMap = new Map();
+
+    // Format the results
+    questionDetails.rows.forEach(row => {
+        // Retrieve the values based on key
+        const { id, chess_piece_id, chess_piece, question_text, question_type_id, question_type, answer_id, answer_text } = row;
+        // Separate each question
+        if (!questionsMap.has(question_text)){
+            questionsMap.set(question_text, {
+                id,
+                chess_piece_id,
+                chess_piece,
+                question_text,
+                question_type_id,
+                question_type,
+                answers: []
+            });
+        }
+        // Add answers to answer array of each question
+        questionsMap.get(question_text).answers.push({
+            id: answer_id,
+            answer: answer_text
+        });
+    })
+    return Array.from(questionsMap.values());
 }
 
 const listAllQuestionType = async () => {
@@ -88,45 +105,6 @@ const insertQuestion = async (question) => {
         return res;
     })
 }
-// const insertQuestion = async (question) => {
-//     // Insert the question first
-//     const questionSql = `
-//         INSERT INTO question
-//         (text, chess_piece_id, question_type_id, create_by, update_by)
-//         VALUES (?, ?, ?, ?, ?);
-//     `;
-//     const questionParams = [
-//         question.text,
-//         question.chessPieceId,
-//         question.questionTypeId,
-//         question.createBy,
-//         question.updateBy
-//     ];
-//     const questionResult = await dbQuery(questionSql, questionParams);
-//     // Get generated ID from INSERT statement
-//     const questionId = questionResult.insertId;
-//     // Insert associated answers
-//     const answers = question.answers || [];
-//     const answerQueries = [];
-//     const answerParams = [];
-//     answers.forEach(answer => {
-//         answerQueries.push('INSERT INTO answer (answer, create_by, update_by) VALUES (?, ?, ?)');
-//         answerParams.push([answer, question.createBy, question.updateBy]);
-//     });
-//     const answerResults = await dbMultiQuery(answerQueries, answerParams);
-//     // Get generated ID and insert into array
-//     const answerIds = answerResults.map(result => result.insertId);
-//     console.log('Answer Ids: ', answerIds);
-//     // Insert associations between question and answers
-//     const questionToAnswerSql = `
-//         INSERT INTO question_to_answer (question_id, answer_id, create_by, update_by)
-//         VALUES (?, ?, ?, ?);
-//     `;
-//     const questionToAnswerParams = answerIds.map(answerId => [questionId, answerId, question.createBy, question.updateBy]);
-//     const insertResult = dbMultiQuery([questionToAnswerSql], questionToAnswerParams);
-
-//     return insertResult;
-// };
 
 const updateQuestion = async (question) => {
     // Update the question text

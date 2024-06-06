@@ -44,7 +44,7 @@ app.use(session({
 // Middleware: CORS Configuration
 app.use(cors({
     origin: origin, // Allow requests from this origin
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow these HTTP methods
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Allow these HTTP methods
     credentials: true, // Allow cookies
     allowedHeaders: ['Content-Type', 'Authorization', 'set-cookie'], // Allow these headers
 }));

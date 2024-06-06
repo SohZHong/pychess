@@ -10,7 +10,7 @@
       v-for="(child) in props.item.children"
       :key="child.path"
     >
-    <el-menu-item :index="child.path" @click="handleClick(child)">{{ child.text }}</el-menu-item>
+    <el-menu-item :index="props.path + child.path" @click="handleClick(child)">{{ child.text }}</el-menu-item>
     </el-menu-item-group>
   </el-sub-menu>
 </template>
@@ -40,6 +40,12 @@ const props = defineProps({
 const emits = defineEmits(['update:route'])
 
 const handleClick = (child: { path: string }) => {
-  emits('update:route', child.path)
+  let completePath
+  if (!props.item.children) {
+    completePath = props.path
+  } else {
+    completePath = props.path + child.path
+  }
+  emits('update:route', completePath)
 }
 </script>

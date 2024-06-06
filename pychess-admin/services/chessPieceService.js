@@ -1,7 +1,13 @@
 const { dbQuery } = require('../utils/dbUtils');
 
 const listAllChessPiece = async () => {
-    const sql = `SELECT * FROM chess_piece`;
+    const sql = `
+    SELECT
+    cp.*,
+    qt.type AS question_type
+    FROM chess_piece cp
+    JOIN question_type qt ON cp.question_type_id = qt.id
+    `;
     const chessPieces = await dbQuery(sql);
     return chessPieces.rows;
 }

@@ -51,20 +51,30 @@ const items = ref([
   {
     icon: ChatLineSquare,
     title: 'Question',
-    path: '/question'
+    path: '/question',
+    children: [
+      {
+        path: '',
+        text: 'Overview'
+      },
+      {
+        path: '/chess',
+        text: 'Chess Piece'
+      }
+    ]
   },
   {
     icon: Setting,
-    title: 'Settings',
+    title: 'Personal',
     path: '/setting',
     children: [
       {
-        path: '/profile',
-        text: 'Profile'
+        path: '',
+        text: 'Settings'
       },
       {
-        path: '/create',
-        text: 'Create'
+        path: '/profile',
+        text: 'Profile'
       }
     ]
   }

@@ -24,13 +24,13 @@
     </el-header>
     <el-main class="table-wrapper">
       <!-- Display User Data -->
-        <el-scrollbar height="600px">
+        <el-scrollbar height="750px">
             <el-table v-loading="loading" stripe :data="tableData" @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="50"  />
               <el-table-column :prop="'name'" :label="'Name'"/>
               <el-table-column :prop="'email'" :label="'Email'"/>
               <el-table-column :prop="'status'" :label="'Status'"/>
-              <el-table-column :prop="'createTime'" :label="'Create Time'"/>
+              <el-table-column :prop="'create_time'" :label="'Create Time'"/>
               <!-- Buttons -->
               <el-table-column :label="'Actions'" #default="scope">
                 <el-button
@@ -74,14 +74,23 @@
             <el-input v-model="userForm.username" placeholder="Please enter username"/>
           </el-form-item>
         </el-row>
-        <el-row>
+        <el-row v-if="userFormTitle !== 'Edit User'">
           <el-form-item style="width: 100%;" label="Password" prop="password">
-            <el-input v-model="userForm.password" type="password" autocomplete="off" placeholder="Please enter password"/>
+            <el-input
+            v-model="userForm.password"
+            type="password"
+            autocomplete="off"
+            placeholder="Please enter password"
+            />
           </el-form-item>
         </el-row>
-        <el-row>
+        <el-row v-if="userFormTitle !== 'Edit User'">
           <el-form-item style="width: 100%;" label="Confirm Password" prop="confirmPassword">
-            <el-input v-model="userForm.confirmPassword" type="password" autocomplete="off"/>
+            <el-input
+            v-model="userForm.confirmPassword"
+            type="password"
+            autocomplete="off"
+            />
           </el-form-item>
         </el-row>
         <el-row>
@@ -320,6 +329,7 @@ export default defineComponent({
             message: 'Invalid inputs'
           })
         }
+        getData()
       })
     }
     // Reset Form Fields

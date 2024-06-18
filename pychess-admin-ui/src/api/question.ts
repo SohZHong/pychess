@@ -2,7 +2,8 @@ import request from '@/utils/request'
 
 export interface AnswerProps {
   id: number | undefined,
-  answer: string | null
+  answer: string | null,
+  isCorrect: string | null
 }
 
 export interface QuestionProps {
@@ -10,6 +11,7 @@ export interface QuestionProps {
   text: string,
   questionTypeId: number,
   chessPieceId: number,
+  score: number,
   answers: Array<string | AnswerProps | null>
   createBy: string | null,
   createTime: Date | null,

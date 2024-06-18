@@ -29,7 +29,8 @@
             <el-table-column type="selection" width="50" />
             <el-table-column prop="text" label="Question" />
             <el-table-column prop="chessPiece" label="Chess Piece" width="150"/>
-            <el-table-column prop="questionType" label="Type" />
+            <el-table-column prop="questionType" label="Type" width="100"/>
+            <el-table-column prop="score" label="Score" width="80" />
             <el-table-column prop="answer1" label="Answer 1" />
             <el-table-column prop="answer2" label="Answer 2" />
             <el-table-column prop="answer3" label="Answer 3" />
@@ -86,6 +87,11 @@
         </el-form-item>
       </el-row>
       <el-row>
+        <el-form-item style="width: 100%;" label="Score" prop="score">
+          <el-input v-model="questionForm.score" type="number" placeholder="Please enter score"/>
+        </el-form-item>
+      </el-row>
+      <el-row>
         <el-form-item style="width: 100%;" label="Question Type" prop="questionTypeId">
           <el-select v-model="questionForm.questionTypeId" placeholder="Question Type" disabled>
             <el-option v-for="qType in questionTypes" :key="qType.id" :label="qType.name" :value="qType.id"/>
@@ -95,15 +101,19 @@
       <el-row v-if="questionForm.questionTypeId === 1">
         <el-form-item style="width: 100%;" label="Answer 1" prop="answer1">
           <el-input v-model="questionForm.answer1" placeholder="Please enter answer 1"/>
+          <el-radio v-model="questionForm.correctAnswer" :label="'1'">Correct</el-radio>
         </el-form-item>
         <el-form-item style="width: 100%;" label="Answer 2" prop="answer2">
           <el-input v-model="questionForm.answer2" placeholder="Please enter answer 2"/>
+          <el-radio v-model="questionForm.correctAnswer" :label="'2'">Correct</el-radio>
         </el-form-item>
         <el-form-item style="width: 100%;" label="Answer 3" prop="answer3">
           <el-input v-model="questionForm.answer3" placeholder="Please enter answer 3"/>
+          <el-radio v-model="questionForm.correctAnswer" :label="'3'">Correct</el-radio>
         </el-form-item>
         <el-form-item style="width: 100%;" label="Answer 4" prop="answer4">
           <el-input v-model="questionForm.answer4" placeholder="Please enter answer 4"/>
+          <el-radio v-model="questionForm.correctAnswer" :label="'4'">Correct</el-radio>
         </el-form-item>
       </el-row>
       <el-row v-else-if="questionForm.questionTypeId === 2">
@@ -145,6 +155,7 @@ interface QuestionTableProps {
   text: string,
   questionTypeId: number
   questionType: string,
+  score: number
   answer1Id: number | undefined,
   answer2Id: number | undefined,
   answer3Id: number | undefined,
@@ -153,13 +164,18 @@ interface QuestionTableProps {
   answer2: string | null,
   answer3: string | null,
   answer4: string | null,
+  isCorrect1: string | null,
+  isCorrect2: string | null,
+  isCorrect3: string | null,
+  isCorrect4: string | null,
 }
 
 interface QuestionRuleForm {
   id: number | undefined
-  text: string
+  text: string,
   questionTypeId: number,
   chessPieceId: number,
+  score: number,
   answer1Id: number | undefined,
   answer2Id: number | undefined,
   answer3Id: number | undefined,
@@ -167,7 +183,8 @@ interface QuestionRuleForm {
   answer1: string,
   answer2: string | null,
   answer3: string | null,
-  answer4: string | null
+  answer4: string | null,
+  correctAnswer: string | null;
 }
 
 export default defineComponent({
@@ -196,6 +213,7 @@ export default defineComponent({
       text: '',
       questionTypeId: 0,
       chessPieceId: 0,
+      score: 0,
       answer1Id: undefined,
       answer2Id: undefined,
       answer3Id: undefined,
@@ -203,7 +221,8 @@ export default defineComponent({
       answer1: '',
       answer2: null,
       answer3: null,
-      answer4: null
+      answer4: null,
+      correctAnswer: null
     })
     const questionFormTitle = ref('')
     const ruleFormRef = ref<FormInstance>()
@@ -243,6 +262,9 @@ export default defineComponent({
         { required: true, message: 'Please select question type', trigger: 'change' },
         { validator: validateQuestionType, trigger: 'blur' }
       ],
+      score: [
+        { required: true, message: 'Please ', trigger: 'blur' }
+      ],
       answer1: [
         { required: true, message: 'Please input answer!', trigger: 'blur' }
       ],
@@ -272,6 +294,7 @@ export default defineComponent({
             text: item.question_text,
             questionTypeId: item.question_type_id,
             questionType: item.question_type,
+            score: item.score,
             answer1Id: item.answers[0]?.id || undefined,
             answer2Id: item.answers[1]?.id || undefined,
             answer3Id: item.answers[2]?.id || undefined,
@@ -279,7 +302,11 @@ export default defineComponent({
             answer1: item.answers[0]?.answer || '',
             answer2: item.answers[1]?.answer || null,
             answer3: item.answers[2]?.answer || null,
-            answer4: item.answers[3]?.answer || null
+            answer4: item.answers[3]?.answer || null,
+            isCorrect1: item.answers[0]?.is_correct || null,
+            isCorrect2: item.answers[1]?.is_correct || null,
+            isCorrect3: item.answers[2]?.is_correct || null,
+            isCorrect4: item.answers[3]?.is_correct || null
           }))
           console.log('tableData:', tableData.value)
         } else {
@@ -337,6 +364,7 @@ export default defineComponent({
       questionForm.answer2 = null
       questionForm.answer3 = null
       questionForm.answer4 = null
+      questionForm.correctAnswer = null
       questionFormTitle.value = 'Add Question'
       showQuestionDialog.value = true
     }
@@ -345,6 +373,7 @@ export default defineComponent({
     const handleUpdateQuestion = (row: Record<string, unknown>) => {
       questionForm.id = row.id as number
       questionForm.text = row.text as string
+      questionForm.score = row.score as number
       questionForm.chessPieceId = row.chessPieceId as number
       questionForm.questionTypeId = row.questionTypeId as number
       questionForm.answer1Id = row.answer1Id as number
@@ -355,6 +384,14 @@ export default defineComponent({
       questionForm.answer2 = row.answer2 as string | null
       questionForm.answer3 = row.answer3 as string | null
       questionForm.answer4 = row.answer4 as string | null
+
+      // Set correctAnswer based on the row data
+      if (row.isCorrect1 === '1') questionForm.correctAnswer = '1'
+      else if (row.isCorrect2 === '1') questionForm.correctAnswer = '2'
+      else if (row.isCorrect3 === '1') questionForm.correctAnswer = '3'
+      else if (row.isCorrect4 === '1') questionForm.correctAnswer = '4'
+      else questionForm.correctAnswer = null
+
       questionFormTitle.value = 'Edit Question'
       showQuestionDialog.value = true
     }
@@ -398,17 +435,26 @@ export default defineComponent({
       await formEl.validate(async (valid) => {
         // Submit only if valid
         if (valid) {
+          // Prepare data for submission
+          const submissionData = {
+            ...questionForm,
+            isCorrect1: questionForm.correctAnswer === '1' ? '1' : '0',
+            isCorrect2: questionForm.correctAnswer === '2' ? '1' : '0',
+            isCorrect3: questionForm.correctAnswer === '3' ? '1' : '0',
+            isCorrect4: questionForm.correctAnswer === '4' ? '1' : '0'
+          }
           // Determine if meant to insert or update user
-          if (questionForm.id === undefined) {
+          if (submissionData.id === undefined) {
             await insertQuestion({
-              text: questionForm.text,
-              questionTypeId: questionForm.questionTypeId,
-              chessPieceId: questionForm.chessPieceId,
+              text: submissionData.text,
+              score: submissionData.score,
+              questionTypeId: submissionData.questionTypeId,
+              chessPieceId: submissionData.chessPieceId,
               answers: [
-                questionForm.answer1,
-                questionForm.answer2,
-                questionForm.answer3,
-                questionForm.answer4
+                { id: submissionData.answer1Id, answer: submissionData.answer1, isCorrect: submissionData.isCorrect1 },
+                { id: submissionData.answer2Id, answer: submissionData.answer2, isCorrect: submissionData.isCorrect2 },
+                { id: submissionData.answer3Id, answer: submissionData.answer3, isCorrect: submissionData.isCorrect3 },
+                { id: submissionData.answer4Id, answer: submissionData.answer4, isCorrect: submissionData.isCorrect4 }
               ],
               createBy: user,
               updateBy: user,
@@ -423,13 +469,14 @@ export default defineComponent({
             })
           } else {
             await updateQuestion({
-              id: questionForm.id,
-              text: questionForm.text,
+              id: submissionData.id,
+              text: submissionData.text,
+              score: submissionData.score,
               answers: [
-                { id: questionForm.answer1Id, answer: questionForm.answer1 },
-                { id: questionForm.answer2Id, answer: questionForm.answer2 },
-                { id: questionForm.answer3Id, answer: questionForm.answer3 },
-                { id: questionForm.answer4Id, answer: questionForm.answer4 }
+                { id: submissionData.answer1Id, answer: submissionData.answer1, isCorrect: submissionData.isCorrect1 },
+                { id: submissionData.answer2Id, answer: submissionData.answer2, isCorrect: submissionData.isCorrect2 },
+                { id: submissionData.answer3Id, answer: submissionData.answer3, isCorrect: submissionData.isCorrect3 },
+                { id: submissionData.answer4Id, answer: submissionData.answer4, isCorrect: submissionData.isCorrect4 }
               ],
               updateTime: new Date(),
               updateBy: user,

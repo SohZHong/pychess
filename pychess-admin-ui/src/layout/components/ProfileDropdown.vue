@@ -13,7 +13,6 @@
 </template>
 
 <script lang="ts">
-import { logout } from '@/api/login'
 import { computed, defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
@@ -26,8 +25,10 @@ export default defineComponent({
     const router = useRouter()
     // Handle logout button
     const handleLogout = async () => {
-      await logout().then(() => {
+      await store.dispatch('Logout').then(() => {
         router.push('/login')
+      }).catch(err => {
+        console.error(err)
       })
     }
     const handleProfileClick = () => {

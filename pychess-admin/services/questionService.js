@@ -10,7 +10,9 @@ const listAllQuestionWithAnswers = async () => {
         qt.id AS question_type_id,
         qt.type AS question_type,
         a.id AS answer_id,
-        a.answer AS answer_text
+        a.answer AS answer_text,
+        a.is_correct AS is_correct,
+        q.score AS score
     FROM question q
     JOIN chess_piece cp ON q.chess_piece_id = cp.id
     JOIN question_type qt ON q.question_type_id = qt.id
@@ -24,7 +26,7 @@ const listAllQuestionWithAnswers = async () => {
     // Format the results
     questionDetails.rows.forEach(row => {
         // Retrieve the values based on key
-        const { id, chess_piece_id, chess_piece, question_text, question_type_id, question_type, answer_id, answer_text } = row;
+        const { id, chess_piece_id, chess_piece, question_text, question_type_id, question_type, answer_id, answer_text, is_correct, score } = row;
         // Separate each question
         if (!questionsMap.has(question_text)){
             questionsMap.set(question_text, {
@@ -34,13 +36,15 @@ const listAllQuestionWithAnswers = async () => {
                 question_text,
                 question_type_id,
                 question_type,
+                score,
                 answers: []
             });
         }
         // Add answers to answer array of each question
         questionsMap.get(question_text).answers.push({
             id: answer_id,
-            answer: answer_text
+            answer: answer_text,
+            is_correct: is_correct
         });
     })
     return Array.from(questionsMap.values());
@@ -55,26 +59,43 @@ const listAllQuestionType = async () => {
 }
 // Example JSON
 // {
-//     "id": 1,
-//     "text": "New question",
+//     "text": "What is python?",
 //     "questionTypeId": 1,
-//     "chessPieceId": 2,
-//     "createBy": 'Zhe Hong',
-//     "updateBy": 'Zhe Hong',
-//     "answers": ["New answer 1", "New answer 2", "New answer 3", "New answer 4"]
-// }
+//     "chessPieceId": 3,
+//     "createBy": "Satou Goro",
+//     "updateBy": "Satou Goro",
+//     "answers": [
+//     {
+//         "answer": "Updated answer 1".
+//         "isCorrect: 0"
+//     },
+//     {
+//         "id": 35,
+//         "answer": "Updated answer 2"
+//     },
+//     {
+//         "id": 36,
+//         "answer": "Updated answer 3"
+//     },
+//     {
+//         "id": 37,
+//         "answer": "Updated answer 4"
+//     }
+//     ]
+
 const insertQuestion = async (question) => {
     return transaction(async (connection) => {
         // Insert the question first
         const questionSql = `
             INSERT INTO question
-            (text, chess_piece_id, question_type_id, create_by, update_by)
+            (text, chess_piece_id, question_type_id, score, create_by, update_by)
             VALUES (?, ?, ?, ?, ?);
         `;
         const questionParams = [
             question.text,
             question.chessPieceId,
             question.questionTypeId,
+            question.score,
             question.createBy,
             question.updateBy
         ];
@@ -85,8 +106,8 @@ const insertQuestion = async (question) => {
         // Insert associated answers
         const answers = question.answers || [];
         const answerQueries = answers.map(answer => ({
-            sql: 'INSERT INTO answer (answer, create_by, update_by) VALUES (?, ?, ?)',
-            params: [answer, question.createBy, question.updateBy]
+            sql: 'INSERT INTO answer (answer, is_correct, create_by, update_by) VALUES (?, ?, ?)',
+            params: [answer.answer, answer.isCorrect, question.createBy, question.updateBy]
         }));
 
         const answerResults = await Promise.all(answerQueries.map(query => connection.query(query.sql, query.params)));
@@ -112,12 +133,14 @@ const updateQuestion = async (question) => {
         UPDATE question 
         SET
             text = ?,
+            score = ?,
             update_by = ?,
             update_time = ?
         WHERE id = ?;
     `;
     const questionParams = [
         question.text,
+        question.score,
         question.updateBy,
         new Date(),
         question.id
@@ -129,8 +152,8 @@ const updateQuestion = async (question) => {
     const updateAnswerParams = [];
 
     question.answers.forEach(answer => {
-        updateAnswerQueries.push('UPDATE answer SET answer = ?, update_by = ?, update_time = ? WHERE id = ?');
-        updateAnswerParams.push([answer.answer, question.updateBy, new Date(), answer.id]);
+        updateAnswerQueries.push('UPDATE answer SET answer = ?, is_correct = ?, update_by = ?, update_time = ? WHERE id = ?');
+        updateAnswerParams.push([answer.answer, answer.isCorrect, question.updateBy, new Date(), answer.id]);
     });
 
     // Execute update queries for existing answers

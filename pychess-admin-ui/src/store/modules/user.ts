@@ -20,7 +20,7 @@ const user: Module<UserModuleState, State> = {
   actions: {
     // Retrieve user information
     async getUserData ({ commit }: ActionContext<UserModuleState, State>): Promise<void> {
-      var username = localStorage.getItem('username')
+      let username = localStorage.getItem('username')
       if (!user) {
         const response = await getCurrentUser()
         const { code, message, data } = response.data

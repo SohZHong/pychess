@@ -1,7 +1,7 @@
 const ResponseHelper = require('../../models/ResponseHelper');
 const { comparePassword } = require('../../utils/passwordUtils')
 const { getSysUserByUsername } = require('../../services/sysUserService');
-const { generateToken } = require('../../utils/tokenUtils');
+const { generateToken, verifyToken } = require('../../utils/tokenUtils');
 
 
 // Register
@@ -42,7 +42,8 @@ const loginSysUser = async(req, res) => {
                 response.error('Invalid password!');
             } else {
                 // Generate token
-                const token = generateToken({ id: user.id, username: user.username });
+                const token = generateToken({ id: user.id, username: user.name });
+                console.log(token);
                 // Set cookie
                 response.setCookie('Token', token);
                 // Send success message
@@ -55,6 +56,18 @@ const loginSysUser = async(req, res) => {
     }
 }
 
+// Retrieved current logged in user
+const getLoggedInUser = async (req, res) => {
+    // Get decoded 
+    const user = req.user
+    const response = new ResponseHelper(res);
+    if (user){
+        response.success('Current user retrieved successful', user)
+    } else {
+        response.error('Error retrieving current user')
+    }
+}
+
 // Logout
 const logout = async(req, res) => {
     const response = new ResponseHelper(res);
@@ -63,4 +76,4 @@ const logout = async(req, res) => {
     response.success('Logout success')
 }
 
-module.exports = { register, loginUser, logout, loginSysUser }
+module.exports = { register, loginUser, logout, loginSysUser, getLoggedInUser }

@@ -2,12 +2,15 @@ const express = require('express');
 const { getAllSysUsers, addSysUser, updateSysUser, deleteSysUsers, fullDeleteSysUsers } = require('../controllers/system/sysUserController');
 const { getAllQuestionWithAnswers, getAllQuestionType, addQuestion, modifyQuestion, fullDeleteQuestion } = require('../controllers/system/questionController');
 const { getAllChessPieces, addChessPiece, modifyChessPiece, fullDeleteChessPiece } = require('../controllers/system/chessController');
-const { loginSysUser } = require('../controllers/system/authController');
+const { loginSysUser, getLoggedInUser } = require('../controllers/system/authController');
 const checkTokenMiddleware = require('../middleware/authToken');
 const router = express.Router();
 
 // Route to login
 router.post('/login', loginSysUser);
+
+// Route to retrieve current user details
+router.get('/getCurrentUser',checkTokenMiddleware, getLoggedInUser);
 
 // ----------- Users -----------
 // Route to list all users

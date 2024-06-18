@@ -16,7 +16,8 @@
     "vue-class-component": "^8.0.0-0",
     "vue-cookies": "^1.8.4",
     "vue-router": "^4.3.2",
-    "vuex": "^4.1.0"
+    "vuex": "^4.1.0",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@eslint-community/eslint-utils": "^4.4.0",

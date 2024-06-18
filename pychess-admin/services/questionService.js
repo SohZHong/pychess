@@ -89,7 +89,7 @@ const insertQuestion = async (question) => {
         const questionSql = `
             INSERT INTO question
             (text, chess_piece_id, question_type_id, score, create_by, update_by)
-            VALUES (?, ?, ?, ?, ?);
+            VALUES (?, ?, ?, ?, ?, ?);
         `;
         const questionParams = [
             question.text,
@@ -106,7 +106,7 @@ const insertQuestion = async (question) => {
         // Insert associated answers
         const answers = question.answers || [];
         const answerQueries = answers.map(answer => ({
-            sql: 'INSERT INTO answer (answer, is_correct, create_by, update_by) VALUES (?, ?, ?)',
+            sql: 'INSERT INTO answer (answer, is_correct, create_by, update_by) VALUES (?, ?, ?, ?)',
             params: [answer.answer, answer.isCorrect, question.createBy, question.updateBy]
         }));
 
@@ -116,10 +116,10 @@ const insertQuestion = async (question) => {
 
         // Insert associations between question and answers
         const questionToAnswerSql = `
-            INSERT INTO question_to_answer (question_id, answer_id, create_by, update_by)
-            VALUES (?, ?, ?, ?);
+            INSERT INTO question_to_answer (question_id, answer_id)
+            VALUES (?, ?);
         `;
-        const questionToAnswerParams = answerIds.map(answerId => [questionId, answerId, question.createBy, question.updateBy]);
+        const questionToAnswerParams = answerIds.map(answerId => [questionId, answerId]);
 
         const res = await Promise.all(questionToAnswerParams.map(params => connection.query(questionToAnswerSql, params)));
 

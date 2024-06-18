@@ -11,12 +11,26 @@
     </el-container>
 </template>
 
-<script lang="ts" setup>
-import { computed } from 'vue'
+<script lang="ts">
+import { computed, defineComponent } from 'vue'
 import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
 
-const route = useRoute()
-const key = computed(() => route.fullPath)
+export default defineComponent({
+  name: 'AppMain',
+  setup () {
+    const route = useRoute()
+    const key = computed(() => route.fullPath)
+    const store = useStore()
+    // Fetch user data when app refreshes
+    store.dispatch('getUserData')
+    return {
+      route,
+      key
+    }
+  }
+})
+
 </script>
 
 <style scoped>

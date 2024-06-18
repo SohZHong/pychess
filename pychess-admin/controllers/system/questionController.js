@@ -36,6 +36,7 @@ const addQuestion = async (req, res) => {
     const response = new ResponseHelper(res);
     try {
         const newQuestion = req.body;
+        console.log(newQuestion);
         await insertQuestion(newQuestion);
         response.success('Question Inserted Successfully');
     } catch (error) {

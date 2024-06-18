@@ -1,142 +1,144 @@
 <template>
-  <el-header class="table-header">
+  <div>
+    <el-header class="table-header">
       <h2>
-          Questions
+        Questions
       </h2>
       <div class="button-container">
-          <el-button
-            type="primary"
-            @click="handleAddQuestion"
-            :icon="ChatLineSquare"
-          >
-          Add Question
-          </el-button>
-          <el-button
-            plain
-            type="danger"
-            :icon="Delete"
-            :disabled="!multipleQuestionsSelected"
-            @click="handleDeleteQuestion"
-          >
-          Delete Question
+        <el-button
+          type="primary"
+          @click="handleAddQuestion"
+          :icon="ChatLineSquare"
+        >
+        Add Question
         </el-button>
+        <el-button
+          plain
+          type="danger"
+          :icon="Delete"
+          :disabled="!multipleQuestionsSelected"
+          @click="handleDeleteQuestion"
+        >
+        Delete Question
+      </el-button>
       </div>
-  </el-header>
-  <el-main class="table-wrapper">
-    <!-- Display Question Data -->
+    </el-header>
+    <el-main class="table-wrapper">
+      <!-- Display Question Data -->
       <el-scrollbar height="750px">
-          <el-table v-loading="loading" stripe :data="tableData" @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="50" />
-            <el-table-column prop="text" label="Question" />
-            <el-table-column prop="chessPiece" label="Chess Piece" width="150"/>
-            <el-table-column prop="questionType" label="Type" width="100"/>
-            <el-table-column prop="score" label="Score" width="80" />
-            <el-table-column prop="answer1" label="Answer 1" />
-            <el-table-column prop="answer2" label="Answer 2" />
-            <el-table-column prop="answer3" label="Answer 3" />
-            <el-table-column prop="answer4" label="Answer 4" />
-            <!-- Buttons -->
-            <el-table-column :label="'Actions'" #default="scope">
-              <el-button
-                type="text"
-                size="small"
-                :icon="Edit"
-                @click="handleUpdateQuestion(scope.row)"
-              >
-                Edit
-              </el-button>
-              <el-button
-                type="text"
-                size="small"
-                :icon="Delete"
-                @click.prevent="handleDeleteQuestion(scope.row)"
-              >
-                Remove
-              </el-button>
-            </el-table-column>
+        <el-table v-loading="loading" stripe :data="tableData" @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="50" />
+          <el-table-column prop="text" label="Question" />
+          <el-table-column prop="chessPiece" label="Chess Piece" width="150"/>
+          <el-table-column prop="questionType" label="Type" width="100"/>
+          <el-table-column prop="score" label="Score" width="80" />
+          <el-table-column prop="answer1" label="Answer 1" />
+          <el-table-column prop="answer2" label="Answer 2" />
+          <el-table-column prop="answer3" label="Answer 3" />
+          <el-table-column prop="answer4" label="Answer 4" />
+          <!-- Buttons -->
+          <el-table-column :label="'Actions'" #default="scope">
+            <el-button
+              type="text"
+              size="small"
+              :icon="Edit"
+              @click="handleUpdateQuestion(scope.row)"
+            >
+              Edit
+            </el-button>
+            <el-button
+              type="text"
+              size="small"
+              :icon="Delete"
+              @click.prevent="handleDeleteQuestion(scope.row)"
+            >
+              Remove
+            </el-button>
+          </el-table-column>
         </el-table>
       </el-scrollbar>
-  </el-main>
+    </el-main>
 
-  <!-- Dialog for Adding New Question -->
-  <el-dialog
-    v-model="showQuestionDialog"
-    :title="questionFormTitle"
-    width="600"
-    destroy-on-close
-  >
-    <el-form
-    :model="questionForm"
-    :rules="questionFormRules"
-    ref="ruleFormRef"
-    label-width="auto"
-    label-position="left"
-    size="default"
-    status-icon
+    <!-- Dialog for Adding New Question -->
+    <el-dialog
+      v-model="showQuestionDialog"
+      :title="questionFormTitle"
+      width="600"
+      destroy-on-close
     >
-      <el-row>
-        <el-form-item style="width: 100%;" label="Question" prop="text">
-          <el-input v-model="questionForm.text" type="textarea" placeholder="Please enter question"/>
-        </el-form-item>
-      </el-row>
-      <el-row>
-        <el-form-item style="width: 100%;" label="Chess Piece" prop="chessPieceId">
-          <el-select v-model="questionForm.chessPieceId" placeholder="Chess Piece" @change="handleChessPieceChange">
-            <el-option v-for="piece in chessPieces" :key="piece.id" :label="piece.name" :value="piece.id"/>
-          </el-select>
-        </el-form-item>
-      </el-row>
-      <el-row>
-        <el-form-item style="width: 100%;" label="Score" prop="score">
-          <el-input v-model="questionForm.score" type="number" placeholder="Please enter score"/>
-        </el-form-item>
-      </el-row>
-      <el-row>
-        <el-form-item style="width: 100%;" label="Question Type" prop="questionTypeId">
-          <el-select v-model="questionForm.questionTypeId" placeholder="Question Type" disabled>
-            <el-option v-for="qType in questionTypes" :key="qType.id" :label="qType.name" :value="qType.id"/>
-          </el-select>
-        </el-form-item>
-      </el-row>
-      <el-row v-if="questionForm.questionTypeId === 1">
-        <el-form-item style="width: 100%;" label="Answer 1" prop="answer1">
-          <el-input v-model="questionForm.answer1" placeholder="Please enter answer 1"/>
-          <el-radio v-model="questionForm.correctAnswer" :label="'1'">Correct</el-radio>
-        </el-form-item>
-        <el-form-item style="width: 100%;" label="Answer 2" prop="answer2">
-          <el-input v-model="questionForm.answer2" placeholder="Please enter answer 2"/>
-          <el-radio v-model="questionForm.correctAnswer" :label="'2'">Correct</el-radio>
-        </el-form-item>
-        <el-form-item style="width: 100%;" label="Answer 3" prop="answer3">
-          <el-input v-model="questionForm.answer3" placeholder="Please enter answer 3"/>
-          <el-radio v-model="questionForm.correctAnswer" :label="'3'">Correct</el-radio>
-        </el-form-item>
-        <el-form-item style="width: 100%;" label="Answer 4" prop="answer4">
-          <el-input v-model="questionForm.answer4" placeholder="Please enter answer 4"/>
-          <el-radio v-model="questionForm.correctAnswer" :label="'4'">Correct</el-radio>
-        </el-form-item>
-      </el-row>
-      <el-row v-else-if="questionForm.questionTypeId === 2">
-        <el-form-item style="width: 100%;" label="Answer" prop="answer1">
-          <el-input v-model="questionForm.answer1" placeholder="Please enter answer"/>
-        </el-form-item>
-      </el-row>
-      <el-row v-else-if="questionForm.questionTypeId === 3">
-        <el-form-item style="width: 100%;" label="Answer" prop="answer1">
-          <el-select v-model="questionForm.answer1" placeholder="Please select answer">
-            <el-option label="True" value="true" />
-            <el-option label="False" value="false" />
-          </el-select>
-        </el-form-item>
-      </el-row>
-    </el-form>
-    <template #footer>
-      <div class="dialog-button-container">
-        <el-button type="primary" @click="handleSubmitForm(ruleFormRef)">Confirm</el-button>
-        <el-button @click="handleResetForm(ruleFormRef)">Cancel</el-button>
-      </div>
-    </template>
-  </el-dialog>
+      <el-form
+      :model="questionForm"
+      :rules="questionFormRules"
+      ref="ruleFormRef"
+      label-width="auto"
+      label-position="left"
+      size="default"
+      status-icon
+      >
+        <el-row>
+          <el-form-item style="width: 100%;" label="Question" prop="text">
+            <el-input v-model="questionForm.text" type="textarea" placeholder="Please enter question"/>
+          </el-form-item>
+        </el-row>
+        <el-row>
+          <el-form-item style="width: 100%;" label="Chess Piece" prop="chessPieceId">
+            <el-select v-model="questionForm.chessPieceId" placeholder="Chess Piece" @change="handleChessPieceChange">
+              <el-option v-for="piece in chessPieces" :key="piece.id" :label="piece.name" :value="piece.id"/>
+            </el-select>
+          </el-form-item>
+        </el-row>
+        <el-row>
+          <el-form-item style="width: 100%;" label="Score" prop="score">
+            <el-input v-model="questionForm.score" type="number" placeholder="Please enter score"/>
+          </el-form-item>
+        </el-row>
+        <el-row>
+          <el-form-item style="width: 100%;" label="Question Type" prop="questionTypeId">
+            <el-select v-model="questionForm.questionTypeId" placeholder="Question Type" disabled>
+              <el-option v-for="qType in questionTypes" :key="qType.id" :label="qType.name" :value="qType.id"/>
+            </el-select>
+          </el-form-item>
+        </el-row>
+        <el-row v-if="questionForm.questionTypeId === 1">
+          <el-form-item style="width: 100%;" label="Answer 1" prop="answer1">
+            <el-input v-model="questionForm.answer1" placeholder="Please enter answer 1"/>
+            <el-radio v-model="questionForm.correctAnswer" value='1'>Correct</el-radio>
+          </el-form-item>
+          <el-form-item style="width: 100%;" label="Answer 2" prop="answer2">
+            <el-input v-model="questionForm.answer2" placeholder="Please enter answer 2"/>
+            <el-radio v-model="questionForm.correctAnswer" value='2'>Correct</el-radio>
+          </el-form-item>
+          <el-form-item style="width: 100%;" label="Answer 3" prop="answer3">
+            <el-input v-model="questionForm.answer3" placeholder="Please enter answer 3"/>
+            <el-radio v-model="questionForm.correctAnswer" value='3'>Correct</el-radio>
+          </el-form-item>
+          <el-form-item style="width: 100%;" label="Answer 4" prop="answer4">
+            <el-input v-model="questionForm.answer4" placeholder="Please enter answer 4"/>
+            <el-radio v-model="questionForm.correctAnswer" value='4'>Correct</el-radio>
+          </el-form-item>
+        </el-row>
+        <el-row v-else-if="questionForm.questionTypeId === 2">
+          <el-form-item style="width: 100%;" label="Answer" prop="answer1">
+            <el-input v-model="questionForm.answer1" placeholder="Please enter answer"/>
+          </el-form-item>
+        </el-row>
+        <el-row v-else-if="questionForm.questionTypeId === 3">
+          <el-form-item style="width: 100%;" label="Answer" prop="answer1">
+            <el-select v-model="questionForm.answer1" placeholder="Please select answer">
+              <el-option label="True" value="true" />
+              <el-option label="False" value="false" />
+            </el-select>
+          </el-form-item>
+        </el-row>
+      </el-form>
+      <template #footer>
+        <div class="dialog-button-container">
+          <el-button type="primary" @click="handleSubmitForm(ruleFormRef)">Confirm</el-button>
+          <el-button @click="handleResetForm(ruleFormRef)">Cancel</el-button>
+        </div>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script lang="ts">
@@ -222,7 +224,7 @@ export default defineComponent({
       answer2: null,
       answer3: null,
       answer4: null,
-      correctAnswer: null
+      correctAnswer: '1'
     })
     const questionFormTitle = ref('')
     const ruleFormRef = ref<FormInstance>()
@@ -276,6 +278,9 @@ export default defineComponent({
       ],
       answer4: [
         { required: true, message: 'Please input answer!', trigger: 'blur' }
+      ],
+      correctAnswer: [
+        { required: true, message: 'Please select the correct answer!', trigger: 'change' }
       ]
     })
 
@@ -308,7 +313,6 @@ export default defineComponent({
             isCorrect3: item.answers[2]?.is_correct || null,
             isCorrect4: item.answers[3]?.is_correct || null
           }))
-          console.log('tableData:', tableData.value)
         } else {
           console.error('Expected array but received', data)
         }
@@ -335,7 +339,6 @@ export default defineComponent({
             updateBy: item.update_by,
             updateTime: item.update_time
           }))
-          console.log('chessPieceData:', tableData.value)
         } else {
           console.error('Expected array but received', data)
         }
@@ -350,12 +353,13 @@ export default defineComponent({
       ids.value = selection.map(question => question.id)
       multipleQuestionsSelected.value = (selection.length > 1)
     }
-    // Add User button function
+    // Add question button function
     const handleAddQuestion = () => {
       questionForm.id = undefined
       questionForm.text = ''
       questionForm.chessPieceId = 0
       questionForm.questionTypeId = 0
+      questionForm.score = 0
       questionForm.answer1Id = undefined
       questionForm.answer2Id = undefined
       questionForm.answer3Id = undefined
@@ -364,7 +368,7 @@ export default defineComponent({
       questionForm.answer2 = null
       questionForm.answer3 = null
       questionForm.answer4 = null
-      questionForm.correctAnswer = null
+      questionForm.correctAnswer = '1'
       questionFormTitle.value = 'Add Question'
       showQuestionDialog.value = true
     }
@@ -443,6 +447,13 @@ export default defineComponent({
             isCorrect3: questionForm.correctAnswer === '3' ? '1' : '0',
             isCorrect4: questionForm.correctAnswer === '4' ? '1' : '0'
           }
+          // Filter out null answers
+          const answers = [
+            { id: submissionData.answer1Id, answer: submissionData.answer1, isCorrect: submissionData.isCorrect1 },
+            { id: submissionData.answer2Id, answer: submissionData.answer2, isCorrect: submissionData.isCorrect2 },
+            { id: submissionData.answer3Id, answer: submissionData.answer3, isCorrect: submissionData.isCorrect3 },
+            { id: submissionData.answer4Id, answer: submissionData.answer4, isCorrect: submissionData.isCorrect4 }
+          ].filter(answer => answer.answer !== null)
           // Determine if meant to insert or update user
           if (submissionData.id === undefined) {
             await insertQuestion({
@@ -450,12 +461,7 @@ export default defineComponent({
               score: submissionData.score,
               questionTypeId: submissionData.questionTypeId,
               chessPieceId: submissionData.chessPieceId,
-              answers: [
-                { id: submissionData.answer1Id, answer: submissionData.answer1, isCorrect: submissionData.isCorrect1 },
-                { id: submissionData.answer2Id, answer: submissionData.answer2, isCorrect: submissionData.isCorrect2 },
-                { id: submissionData.answer3Id, answer: submissionData.answer3, isCorrect: submissionData.isCorrect3 },
-                { id: submissionData.answer4Id, answer: submissionData.answer4, isCorrect: submissionData.isCorrect4 }
-              ],
+              answers,
               createBy: user,
               updateBy: user,
               id: null,
@@ -472,12 +478,7 @@ export default defineComponent({
               id: submissionData.id,
               text: submissionData.text,
               score: submissionData.score,
-              answers: [
-                { id: submissionData.answer1Id, answer: submissionData.answer1, isCorrect: submissionData.isCorrect1 },
-                { id: submissionData.answer2Id, answer: submissionData.answer2, isCorrect: submissionData.isCorrect2 },
-                { id: submissionData.answer3Id, answer: submissionData.answer3, isCorrect: submissionData.isCorrect3 },
-                { id: submissionData.answer4Id, answer: submissionData.answer4, isCorrect: submissionData.isCorrect4 }
-              ],
+              answers,
               updateTime: new Date(),
               updateBy: user,
               createBy: null,

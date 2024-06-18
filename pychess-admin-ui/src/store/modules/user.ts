@@ -1,4 +1,5 @@
 import { login, logout } from '@/api/login'
+import { getCurrentUser } from '@/api/user'
 import { ActionContext, Module } from 'vuex'
 import { State, UserModuleState } from '../index'
 
@@ -13,9 +14,27 @@ const user: Module<UserModuleState, State> = {
     },
     RESET_STATE: (state: UserModuleState) => {
       state.name = null
+      localStorage.removeItem('username')
     }
   },
   actions: {
+    // Retrieve user information
+    async getUserData ({ commit }: ActionContext<UserModuleState, State>): Promise<void> {
+      var username = localStorage.getItem('username')
+      if (!user) {
+        const response = await getCurrentUser()
+        const { code, message, data } = response.data
+        if (code === 200) {
+          username = data.username
+          localStorage.setItem('username', data.username)
+        } else {
+          return Promise.reject(message)
+        }
+      }
+      // Update state
+      commit('SET_NAME', username)
+      return Promise.resolve()
+    },
     // Define the type for the context parameter
     async Login ({ commit }: ActionContext<UserModuleState, State>, userInfo: { username: string; password: string }): Promise<void> {
       const { username, password } = userInfo
@@ -23,6 +42,7 @@ const user: Module<UserModuleState, State> = {
       const { code, message } = response.data
       if (code === 200) {
         commit('SET_NAME', username)
+        localStorage.setItem('username', username)
         return Promise.resolve()
       } else {
         return Promise.reject(message)

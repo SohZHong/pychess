@@ -13,6 +13,14 @@ export interface UserProps {
   updateTime: Date | null
 }
 
+// Retrieve current user data
+export function getCurrentUser () {
+  return request({
+    url: '/api/system/getCurrentUser',
+    method: 'get'
+  })
+}
+
 // Retrieve all user
 export function listAllUser (query: string) {
   return request({

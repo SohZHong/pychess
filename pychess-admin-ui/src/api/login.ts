@@ -6,6 +6,7 @@ export interface RegisterProps {
     email: string,
     role: string
 }
+
 // Login function
 export function login (
   username: string,

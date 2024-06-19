@@ -16,8 +16,7 @@ const listAllQuestionWithAnswers = async () => {
     FROM question q
     JOIN chess_piece cp ON q.chess_piece_id = cp.id
     JOIN question_type qt ON q.question_type_id = qt.id
-    JOIN question_to_answer q2a ON q.id = q2a.question_id
-    JOIN answer a ON q2a.answer_id = a.id
+    JOIN answer a ON q.id = a.question_id
     ORDER BY q.id, a.id;
     `;
     const questionDetails = await dbQuery(sql);
@@ -106,23 +105,11 @@ const insertQuestion = async (question) => {
         // Insert associated answers
         const answers = question.answers || [];
         const answerQueries = answers.map(answer => ({
-            sql: 'INSERT INTO answer (answer, is_correct, create_by, update_by) VALUES (?, ?, ?, ?)',
-            params: [answer.answer, answer.isCorrect, question.createBy, question.updateBy]
+            sql: 'INSERT INTO answer (question_id, answer, is_correct, create_by, update_by) VALUES (?, ?, ?, ?, ?)',
+            params: [questionId, answer.answer, answer.isCorrect, question.createBy, question.updateBy]
         }));
 
-        const answerResults = await Promise.all(answerQueries.map(query => connection.query(query.sql, query.params)));
-        // Get generated ID and insert into array
-        const answerIds = answerResults.map(([result]) => result.insertId);
-
-        // Insert associations between question and answers
-        const questionToAnswerSql = `
-            INSERT INTO question_to_answer (question_id, answer_id)
-            VALUES (?, ?);
-        `;
-        const questionToAnswerParams = answerIds.map(answerId => [questionId, answerId]);
-
-        const res = await Promise.all(questionToAnswerParams.map(params => connection.query(questionToAnswerSql, params)));
-
+        const res = await Promise.all(answerQueries.map(query => connection.query(query.sql, query.params)));
         return res;
     })
 }

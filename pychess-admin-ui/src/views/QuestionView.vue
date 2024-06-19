@@ -326,9 +326,9 @@ export default defineComponent({
     // Get chess data
     const getChessData = async () => {
       loading.value = true
-      const res = await listAllChessPiece('')
-      const { data } = res.data
       try {
+        const res = await listAllChessPiece('')
+        const { data } = res.data
         if (Array.isArray(data)) {
           chessPieces.value = data.map((item) => ({
             id: item.id,

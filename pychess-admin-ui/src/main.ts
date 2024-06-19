@@ -14,5 +14,3 @@ app.use(VueCookies)
 app.use(router)
 app.use(store)
 app.mount('#app')
-
-createApp(App).use(ElementPlus).use(store).use(router).mount('#app')

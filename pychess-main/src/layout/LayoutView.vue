@@ -7,7 +7,7 @@
                 </div>
                 <div class="logo-container">
                     <a href="/">
-                        <img class="logo" src="/images/logo-no-background.svg" />
+                        <img class="logo" src="@/assets/images/logo-no-background.svg" />
                     </a>
                 </div>
             </div>
@@ -17,7 +17,9 @@
             </div>
         </div>
     </header>
-    <app-main />
+    <main>
+        <app-main />
+    </main>
 </template>
 
 <script lang="ts" setup>
@@ -42,7 +44,7 @@ import AppMain from './components/AppMain.vue'
     align-items: center;
     justify-content: space-between;
     height: var(--header-height);
-    border-bottom: 1px solid var(--el-menu-border-color);
+    /* border-bottom: 1px solid var(--el-menu-border-color); */
 }
 .logo-container {
     display: flex;

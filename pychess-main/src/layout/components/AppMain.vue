@@ -1,14 +1,12 @@
 <template>
-    <el-container class="app-main">
-        <!-- Render view only if there's a link -->
-        <router-view v-slot="{ Component, route }">
-        <transition name="fade">
-            <keep-alive>
-            <component :is="Component" v-if="!route.meta.link" :key="key" />
-            </keep-alive>
-        </transition>
-        </router-view>
-    </el-container>
+  <!-- Render view only if there's a link -->
+  <router-view v-slot="{ Component, route }">
+  <transition name="fade">
+      <keep-alive>
+      <component :is="Component" v-if="!route.meta.link" :key="key" />
+      </keep-alive>
+  </transition>
+  </router-view>
 </template>
 
 <script lang="ts">
@@ -30,8 +28,5 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.app-main {
-    display: flex;
-    flex-direction: column;
-}
+
 </style>

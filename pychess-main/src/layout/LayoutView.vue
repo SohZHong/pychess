@@ -1,10 +1,18 @@
 <template>
     <header class="navbar">
+        <side-bar-view :is-open="isSideBarOpen" :handle-close-side-bar="handleCloseSideBar">
+            <ul>
+                <li>
+                    <router-link to="/">Home</router-link>
+                </li>
+                <li>
+                    <router-link to="/leaderboard">Leaderboard</router-link>
+                </li>
+            </ul>
+        </side-bar-view>
         <div class="navbar-wrapper">
             <div class="hero-left-container">
-                <div class="hamburger-wrapper">
-                    <button>Hello</button>
-                </div>
+                <hamburger-view :handle-hamburger-click="handleHamburgerClick"/>
                 <div class="logo-container">
                     <a href="/">
                         <img class="logo" src="@/assets/images/logo-no-background.svg" />
@@ -23,7 +31,21 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue'
 import AppMain from './components/AppMain.vue'
+import HamburgerView from './components/menu/HamburgerView.vue'
+import SideBarView from './components/menu/SideBarView.vue'
+
+const isSideBarOpen = ref<boolean>(false)
+
+const handleHamburgerClick = () => {
+  isSideBarOpen.value = !isSideBarOpen.value
+}
+
+const handleCloseSideBar = () => {
+  isSideBarOpen.value = false
+}
+
 </script>
 
 <style scoped>
@@ -51,10 +73,10 @@ import AppMain from './components/AppMain.vue'
     align-items: center;
     justify-content: center;
     height: var(--header-height);
+}
 
-    .logo {
+.logo-container .logo {
         height: auto;
         width: 10em;
-    }
 }
 </style>

@@ -169,7 +169,7 @@ interface QuestionTableProps {
   isCorrect1: string | null,
   isCorrect2: string | null,
   isCorrect3: string | null,
-  isCorrect4: string | null,
+  isCorrect4: string | null
 }
 
 interface QuestionRuleForm {
@@ -186,7 +186,7 @@ interface QuestionRuleForm {
   answer2: string | null,
   answer3: string | null,
   answer4: string | null,
-  correctAnswer: string | null;
+  correctAnswer: string | null
 }
 
 export default defineComponent({

@@ -1,4 +1,4 @@
-const { listAllChessPiece, insertChessPiece, updateChessPiece, deleteChessPiece } = require('../../services/chessPieceService');
+const { listAllChessPiece, insertChessPiece, updateChessPiece, deleteChessPiece } = require('../../services/system/chessPieceService');
 const ResponseHelper = require('../../models/ResponseHelper');
 
 // List All Chess Piece

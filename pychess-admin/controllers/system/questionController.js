@@ -4,7 +4,7 @@ const {
     insertQuestion,
     updateQuestion,
     deleteQuestion
-} = require('../../services/questionService');
+} = require('../../services/system/questionService');
 const ResponseHelper = require('../../models/ResponseHelper');
 
 // List All Question Details

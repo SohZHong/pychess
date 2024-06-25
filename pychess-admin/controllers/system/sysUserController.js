@@ -1,4 +1,4 @@
-const { listAllUser, checkUsernameUnique, insertUser, updateUser, delUser, fullDeleteUser } = require('../../services/sysUserService');
+const { listAllUser, checkUsernameUnique, insertUser, updateUser, delUser, fullDeleteUser } = require('../../services/system/sysUserService');
 const ResponseHelper = require('../../models/ResponseHelper');
 
 // List All System Users

@@ -1,8 +1,8 @@
-const { dbQuery } = require('../utils/dbUtils');
-const { encryptPassword } = require('../utils/passwordUtils')
+const { dbQuery } = require('../../utils/dbUtils');
+const { encryptPassword } = require('../../utils/passwordUtils')
 
 const listAllUser = async () => {
-    const sql = `SELECT * FROM sys_user`;
+    const sql = `SELECT * FROM sys_user WHERE del_flag != 1`;
     const sysUsers = await dbQuery(sql);
     return sysUsers.rows;
 }
@@ -10,7 +10,7 @@ const listAllUser = async () => {
 const getSysUserByUsername = async (username) => {
     const sql = `
     SELECT * from sys_user
-    WHERE name = ?
+    WHERE name = ? AND del_flag != 1
     `
     const res = await dbQuery(sql, [username]);
     return res.rows[0];

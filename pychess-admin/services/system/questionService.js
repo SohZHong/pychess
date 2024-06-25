@@ -1,4 +1,4 @@
-const { dbQuery, dbMultiQuery, transaction } = require('../utils/dbUtils');
+const { dbQuery, dbMultiQuery, transaction } = require('../../utils/dbUtils');
 
 const listAllQuestionWithAnswers = async () => {
     const sql = `

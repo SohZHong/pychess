@@ -5,16 +5,19 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const sysRouter = require('./routes/sysRouter');
-const { logout } = require('./controllers/system/authController');
+const gameRouter = require('./routes/generalRouter');
+const { logout } = require('./controllers/main/authController');
 const app = express();
 const port = process.env.PORT || 3000;
-const origin = `${process.env.DOMAIN}:${process.env.DOMAIN_PORT}`;
+const adminOrigin = `${process.env.DOMAIN}:${process.env.ADMIN_DOMAIN_PORT}`;
+const mainOrigin = `${process.env.DOMAIN}:${process.env.MAIN_DOMAIN_PORT}`;
 
 // Debugging: Log environment variables
 console.log('Server environment variables:', {
     PORT: port,
     DOMAIN: process.env.DOMAIN,
-    DOMAIN_PORT: process.env.DOMAIN_PORT,
+    ADMIN_DOMAIN_PORT: process.env.ADMIN_DOMAIN_PORT,
+    MAIN_DOMAIN_PORT: process.env.MAIN_DOMAIN_PORT,
     SESSION_SECRET: process.env.SESSION_SECRET,
     COOKIE_AGE: process.env.COOKIE_AGE,
     NODE_ENV: process.env.NODE_ENV
@@ -43,7 +46,7 @@ app.use(session({
 
 // Middleware: CORS Configuration
 app.use(cors({
-    origin: origin, // Allow requests from this origin
+    origin: [adminOrigin, mainOrigin], // Allow requests from these origin
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Allow these HTTP methods
     credentials: true, // Allow cookies
     allowedHeaders: ['Content-Type', 'Authorization', 'set-cookie'], // Allow these headers
@@ -58,8 +61,10 @@ app.get('/test', (req, res) => {
     res.status(200).json({ message: 'Server is running' });
 });
 
-// Register routes
+// System Admin Routes
 app.use('/api/system', sysRouter);
+// Game Routes
+app.use('/api', gameRouter);
 // Logout route
 app.post('/api/logout', logout)
 

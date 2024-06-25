@@ -1,4 +1,4 @@
-const { dbQuery } = require('../utils/dbUtils');
+const { dbQuery } = require('../../utils/dbUtils');
 
 const listAllChessPiece = async () => {
     const sql = `

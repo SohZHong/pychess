@@ -2,7 +2,7 @@ const express = require('express');
 const { getAllSysUsers, addSysUser, updateSysUser, deleteSysUsers, fullDeleteSysUsers } = require('../controllers/system/sysUserController');
 const { getAllQuestionWithAnswers, getAllQuestionType, addQuestion, modifyQuestion, fullDeleteQuestion } = require('../controllers/system/questionController');
 const { getAllChessPieces, addChessPiece, modifyChessPiece, fullDeleteChessPiece } = require('../controllers/system/chessController');
-const { loginSysUser, getLoggedInUser } = require('../controllers/system/authController');
+const { loginSysUser, getLoggedInUser } = require('../controllers/main/authController');
 const checkTokenMiddleware = require('../middleware/authToken');
 const router = express.Router();
 

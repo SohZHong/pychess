@@ -1,8 +1,9 @@
 <template>
     <div class="sidebar">
-        <div class="backdrop" @click="handleCloseSideBar" v-if="props.isOpen"></div>
+        <div class="backdrop" @click="props.handleCloseSideBar" v-if="props.isOpen"></div>
         <Transition name="slide">
-            <div v-if="isOpen" class="panel">
+            <div v-if="props.isOpen" class="panel">
+                <button class="close-button" @click="props.handleCloseSideBar">Close</button>
                 <slot></slot>
             </div>
         </Transition>
@@ -24,7 +25,7 @@ const props = defineProps<{
     transition: transform 0.3s ease-in-out;
 }
 .slide-enter-from, .slide-leave-to {
-    transform: translateX(-250px); /* Start off-screen to the left */
+    transform: translateX(-400px); /* Start off-screen to the left */
 }
 .slide-enter-to, .slide-leave-from {
     transform: translateX(0); /* End at the final position */
@@ -46,9 +47,49 @@ const props = defineProps<{
     overflow-y: auto; /* Provide scrolling */
     z-index: 999;
     position: fixed;
-    height: 90vh;
-    width: 250px;
-    padding: 3rem 30px;
-    box-shadow: var(--border-drop-shadow);
+    height: 100vh;
+    width: 350px;
+    padding: 1rem 30px;
+    box-shadow: var(--border-dark-drop-shadow);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar .panel .close-button {
+    overflow: hidden;
+    position: relative;
+    margin-left: auto;
+    border: none;
+    padding: 0;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--primary-brand-color);
+    font: inherit;
+    text-indent: 100%;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.sidebar .panel .close-button:hover {
+    color: var(--white-mode-bg);
+    background-color: var(--primary-brand-color);
+}
+
+.close-button:before, .close-button:after {
+    position: absolute;
+    top: 15%;
+    left: calc(50% - .0625em);
+    width: .125em;
+    height: 70%;
+    border-radius: .125em;
+    transform: rotate(45deg);
+    background: currentcolor;
+    content: ''
+}
+
+.close-button:after {
+    transform: rotate(-45deg);
 }
 </style>

@@ -1,12 +1,12 @@
 import request from '@/utils/request'
 
-interface RegisterProps {
+export interface RegisterProps {
     username: string,
     password: string,
     email: string
 }
 
-interface LoginProps {
+export interface LoginProps {
     username: string,
     password: string
 }
@@ -24,7 +24,7 @@ export function register (
 
 // Login function
 export function login (
-    data: LoginProps
+  data: LoginProps
 ) {
   return request({
     url: '/api/login',

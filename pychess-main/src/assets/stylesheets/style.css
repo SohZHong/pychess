@@ -1,8 +1,12 @@
 :root {
+    --primary-brand-color: #7054fc;
     --white-mode-bg: #e5e5e5;
     --font-size: 16px;
-    --header-height: 55px;
-    --border-drop-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+    --header-height: 70px;
+    --border-light-drop-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    --border-dark-drop-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    --button-light-drop-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    --button-light-drop-shadow-active: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
 }
 
 @font-face {
@@ -13,11 +17,34 @@
     src: local("SF Pro Text"), url("../../../public/fonts/SF-Pro.ttf") format("truetype")
 }
 
-body {
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+a, a:active {
+    text-decoration: none;
+}
+
+ul, li {
+    text-decoration: none;
+    list-style-type: none;
 }
 
 .hidden {
     visibility: hidden;
+}
+
+.light-button {
+    color: var(--primary-brand-color);
+    font-weight: bold;
+    box-shadow: var(--button-light-drop-shadow);
+    cursor: pointer;
+    transition: box-shadow 0.3s ease-in-out;
+    padding: 0.5em 0.8em;
+}
+
+.light-button:active {
+    box-shadow: var(--button-light-drop-shadow-active);
 }

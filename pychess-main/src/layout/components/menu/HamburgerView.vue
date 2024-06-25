@@ -21,14 +21,21 @@ const props = defineProps<{
 }>()
 
 </script>
-<!-- https://regenrek.com/posts/how-to-create-an-animated-vue-sidebar-menu-with-vue-observable/ -->
+
 <style scoped>
 #hamburger {
-    border: 1px solid grey;
+    box-shadow: var(--button-light-drop-shadow);
     position: relative;
     height: 35px;
     width: 35px;
     padding: 2px;
+    margin-right: 15px;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+#hamburger:active {
+    box-shadow: var(--button-light-drop-shadow-active);
 }
 
 .hamburger-button {
@@ -38,7 +45,7 @@ const props = defineProps<{
 }
 
 .hamburger-button .bar {
-    background-color: #130f40;
+    background-color: var(--primary-brand-color);
     position: absolute;
     top: 50%;
     right: 6px;

@@ -11,11 +11,11 @@ const service = axios.create({
 })
 
 service.interceptors.response.use(
-  response => {
+  async response => {
     const { code } = response.data
 
     if (code === 401) {
-      store.dispatch('showAlert', {
+      await store.dispatch('showAlert', {
         message: 'Login Expired! Please relogin',
         header: 'Login Expired',
         onClose: () => {
@@ -27,13 +27,13 @@ service.interceptors.response.use(
       return response
     }
   },
-  error => {
+  async error => {
     if (error.response) {
       // Extract error message from response
       const { code, message } = error.response.data
       // Token expired
       if (code === 401) {
-        store.dispatch('showAlert', {
+        await store.dispatch('showAlert', {
           message: 'Unauthorised Access! Please relogin',
           header: 'Unauthorised Access',
           onClose: () => {
@@ -42,7 +42,7 @@ service.interceptors.response.use(
         })
         return Promise.reject(new Error('Unauthorized Access! Please relogin'))
       } else {
-        store.dispatch('showAlert', {
+        await store.dispatch('showAlert', {
           message
         })
         return Promise.reject(new Error(message))

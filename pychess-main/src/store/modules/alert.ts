@@ -24,7 +24,7 @@ const alert: Module<AlertModuleState, State> = {
       state.alert.header = payload.header || 'Error'
       state.alert.onClose = payload.onClose || null
     },
-    HIDE_ALERT (state: AlertModuleState) {
+    CLOSE_ALERT (state: AlertModuleState) {
       state.alert.isOpen = false
       // Run custom on close if provided
       if (state.alert.onClose) state.alert.onClose()
@@ -35,7 +35,7 @@ const alert: Module<AlertModuleState, State> = {
       commit('SHOW_ALERT', payload)
     },
     closeAlert ({ commit }: ActionContext<AlertModuleState, State>) {
-      commit('HIDE_ALERT')
+      commit('CLOSE_ALERT')
     }
   }
 }

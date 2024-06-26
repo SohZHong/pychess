@@ -35,7 +35,7 @@ const user: Module<UserModuleState, State> = {
       let id = localStorage.getItem('userId')
       let username = localStorage.getItem('userName')
       let score = localStorage.getItem('userScore')
-      if (!user) {
+      if (!username || !id || !score) {
         const response = await getCurrentUser()
         const { code, message, data } = response.data
         if (code === 200) {

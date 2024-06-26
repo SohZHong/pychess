@@ -1,6 +1,7 @@
 <template>
     <div class="alert-box">
-        <div class="backdrop" @click="handleCloseBox" v-if="isOpen"></div>
+        <div class="backdrop" @click="handleCloseBox" v-if="isOpen">
+        </div>
         <Transition name="bottom-fade">
             <div class="container" v-if="isOpen">
                 <div class="header">
@@ -16,16 +17,18 @@
 </template>
 
 <script lang="ts" setup>
-import { useStore } from 'vuex'
 import { computed } from 'vue'
+import { useStore } from 'vuex'
 
 const store = useStore()
 const alert = computed(() => store.state.alert)
 
-const { isOpen, header, message } = alert.value
+const isOpen = computed(() => alert.value.alert.isOpen)
+const header = computed(() => alert.value.alert.header)
+const message = computed(() => alert.value.alert.message)
 
-const handleCloseBox = () => {
-  store.dispatch('hideAlert')
+const handleCloseBox = async () => {
+  await store.dispatch('closeAlert')
 }
 
 </script>
@@ -42,8 +45,14 @@ const handleCloseBox = () => {
     opacity: 1;
     transform: translateY(0);
 }
+.alert-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 .alert-box .backdrop {
+    background-color: rgba(0,0,0,.20);
     width: 100vw; /* Cover whole screen */
     height: 100vh;
     position: fixed;
@@ -53,7 +62,6 @@ const handleCloseBox = () => {
 }
 
 .alert-box .container {
-    margin: 0 auto;
     border-radius: 10px;
     background-color: #ffffff;
     z-index: 999;
@@ -68,6 +76,19 @@ const handleCloseBox = () => {
     align-items: center;
     justify-content: space-between;
     color: var(--primary-brand-color);
+}
+
+.alert-box .container .header svg{
+    font-size: 28px;
+}
+
+.alert-box .container .header > * {
+    margin: 0 1rem;
+}
+
+.alert-box .container .body {
+    text-align: justify;
+    margin: 1rem;
 }
 
 </style>

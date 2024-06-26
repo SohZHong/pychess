@@ -66,7 +66,7 @@ app.use('/api/system', sysRouter);
 // Game Routes
 app.use('/api', gameRouter);
 // Logout route
-app.post('/api/logout', logout)
+app.post('/api/logout', logout);
 
 // Debugging: Catch unhandled routes
 app.use((req, res, next) => {

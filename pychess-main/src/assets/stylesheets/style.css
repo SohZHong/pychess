@@ -1,5 +1,6 @@
 :root {
     --primary-brand-color: #7054fc;
+    --primary-brand-gradient: linear-gradient(90deg, rgba(9,9,121,1) 0%, rgba(112,84,252,1) 32%, rgba(105,92,252,1) 100%);
     --white-mode-bg: #e5e5e5;
     --font-size: 16px;
     --header-height: 70px;
@@ -38,11 +39,12 @@ ul, li {
 
 .light-button {
     color: var(--primary-brand-color);
+    border: none;
     font-weight: bold;
     box-shadow: var(--button-light-drop-shadow);
     cursor: pointer;
     transition: box-shadow 0.3s ease-in-out;
-    padding: 0.5em 0.8em;
+    padding: 0.5em 1em;
 }
 
 .light-button:active {

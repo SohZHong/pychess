@@ -1,14 +1,14 @@
 <template>
-    <div class="login-container">
-        <form class="login-form" @submit.prevent="handleSubmitForm">
-            <h1 class="title">Login</h1>
+    <div class="register-container">
+        <form class="register-form" @submit.prevent="handleSubmitForm">
+            <h1 class="title">Register</h1>
             <div class="input-container">
                 <label for="username">Username</label>
                 <input-field
                     type="text"
                     name="username"
                     placeholder="Please enter username"
-                    v-model="loginForm.username"
+                    v-model="registerForm.username"
                     icon="user"
                     required
                 />
@@ -19,44 +19,58 @@
                     type="password"
                     name="password"
                     placeholder="Please enter password"
-                    v-model="loginForm.password"
+                    v-model="registerForm.password"
                     icon="lock"
                     required
                 />
             </div>
-            <button class="login-button" type="submit">Login</button>
+            <div class="input-container">
+                <label for="email">Email</label>
+                <InputField
+                    type="email"
+                    name="email"
+                    placeholder="Please enter email"
+                    v-model="registerForm.email"
+                    icon="envelope"
+                    required
+                />
+            </div>
+            <button class="register-button" type="submit">Sign Up</button>
         </form>
         <div class="register-redirect">
-            <p>Don't have an account?</p>
-            <router-link to="/register">Sign Up</router-link>
+            <p>Already have an account?</p>
+            <router-link to="/login">Sign In</router-link>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { login } from '@/api/auth'
+import { register } from '@/api/auth'
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import InputField from '@/components/InputField.vue'
 
-interface LoginForm {
+interface RegisterForm {
   username: string,
-  password: string
+  password: string,
+  email: string
 }
 
 const router = useRouter()
-const loginForm = reactive<LoginForm>({
+const registerForm = reactive<RegisterForm>({
   username: '',
-  password: ''
+  password: '',
+  email: ''
 })
 
 const handleSubmitForm = async () => {
-  const username = loginForm.username
-  const password = loginForm.password
-  await login({ username, password })
+  const username = registerForm.username
+  const password = registerForm.password
+  const email = registerForm.email
+  await register({ username, password, email })
     .then(() => {
-    // Navigate user to homepage
-      router.push('/')
+    // Navigate user to login page
+      router.push('/login')
     }).catch(err => {
       console.error(err)
     })
@@ -64,35 +78,35 @@ const handleSubmitForm = async () => {
 </script>
 
 <style scoped>
-.login-container {
+.register-container {
     margin: 3rem auto 0 auto;
     width: 500px;
     border-radius: 10px;
     box-shadow: var(--border-light-drop-shadow);
 }
 
-.login-container .login-form {
+.register-container .register-form {
     padding: 2rem;
 }
 
-.login-form .title {
+.register-form .title {
     text-align: center;
     color: var(--primary-brand-color);
     font-size: 40px;
     font-weight: 900;
 }
 
-.login-form .input-container {
+.register-form .input-container {
     margin: 1.5rem 0;
     text-align: start;
 }
 
-.login-form .input-container > label {
+.register-form .input-container > label {
     font-weight: bold;
     font-size: 14px;
 }
 
-.login-form  .login-button {
+.register-form  .register-button {
     margin: 2rem 0 0 auto;
     font-family: "SF Pro Text";
     border: none;
@@ -108,7 +122,7 @@ const handleSubmitForm = async () => {
     transition: filter 0.2s ease-in-out;
 }
 
-.login-form .login-button:hover{
+.register-form .register-button:hover{
     filter: brightness(1.3);
 }
 
@@ -126,11 +140,11 @@ const handleSubmitForm = async () => {
 }
 
 @media only screen and (max-width: 576px) {
-    .login-container {
+    .register-container {
         width: 90vw;
     }
 
-    .login-form .title {
+    .register-form .title {
         font-size: 35px
     }
 }

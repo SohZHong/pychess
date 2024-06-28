@@ -19,6 +19,17 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
+    path: '/register',
+    component: LayoutView,
+    children: [
+      {
+        path: '',
+        name: 'register',
+        component: () => import('@/views/RegisterView.vue')
+      }
+    ]
+  },
+  {
     path: '/about',
     component: LayoutView,
     children: [

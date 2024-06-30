@@ -39,11 +39,11 @@ const handleCloseBox = async () => {
 }
 .bottom-fade-enter-from, .bottom-fade-leave-to {
     opacity: 0;
-    transform: translateY(-50px);
+    transform: translateY(-50px) translate(-50%, -50%);
 }
 .bottom-fade-enter-to, .bottom-fade-leave-from {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) translate(-50%, -50%);
 }
 .alert-box {
     display: flex;
@@ -66,9 +66,12 @@ const handleCloseBox = async () => {
     background-color: #ffffff;
     z-index: 999;
     max-width: 500px;
-    position: fixed;
     padding: 1rem;
     box-shadow: var(--border-dark-drop-shadow);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .alert-box .container .header {

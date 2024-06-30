@@ -38,11 +38,13 @@
         </div>
     </header>
     <main>
+        <alert-box />
         <app-main />
     </main>
 </template>
 
 <script lang="ts" setup>
+import AlertBox from '@/components/AlertBox.vue'
 import { computed, ref } from 'vue'
 import AppMain from './components/AppMain.vue'
 import HamburgerView from './components/menu/HamburgerView.vue'
@@ -53,8 +55,8 @@ import { useRouter } from 'vue-router'
 const isSideBarOpen = ref<boolean>(false)
 const router = useRouter()
 const store = useStore()
-const username = store.state.user.name
-const loggedIn = computed(() => username != null)
+const username = computed(() => store.state.user.name)
+const loggedIn = computed(() => username.value != null)
 
 const handleHamburgerClick = () => {
   isSideBarOpen.value = !isSideBarOpen.value

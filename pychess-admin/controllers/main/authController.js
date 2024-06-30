@@ -44,7 +44,7 @@ const loginUser = async(req, res) => {
                 response.error('Invalid password!');
             } else {
                 // Generate token
-                const token = generateToken({ id: user.id, username: user.name });
+                const token = generateToken({ id: user.id, username: user.name, score: user.score });
                 // Set cookie
                 response.setCookie('Token', token);
                 // Send success message

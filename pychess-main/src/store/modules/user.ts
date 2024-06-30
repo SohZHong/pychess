@@ -32,26 +32,35 @@ const user: Module<UserModuleState, State> = {
   actions: {
     // Retrieve user information
     async getUserData ({ commit }: ActionContext<UserModuleState, State>): Promise<void> {
-      let id = localStorage.getItem('userId')
-      let username = localStorage.getItem('userName')
-      let score = localStorage.getItem('userScore')
-      if (!username || !id || !score) {
+      let storageId = localStorage.getItem('userId')
+      let storageName = localStorage.getItem('userName')
+      let storageScore = localStorage.getItem('userScore')
+
+      if (!storageId || !storageName || !storageScore) {
         const response = await getCurrentUser()
+        console.log(response)
         const { code, message, data } = response.data
         if (code === 200) {
-          id = data.id
-          username = data.username
-          score = data.score
-          localStorage.setItem('userId', data.id)
+          storageId = data.id
+          storageName = data.username
+          storageScore = data.score
+          localStorage.setItem('userId', data.id.toString())
           localStorage.setItem('userName', data.username)
-          localStorage.setItem('userScore', data.score)
+          localStorage.setItem('userScore', data.score.toString())
         } else {
           return Promise.reject(message)
         }
       }
+      // Convert id and score to numbers
+      const id: number = Number(storageId)
+      const score: number = Number(storageScore)
+
+      if (isNaN(id) || isNaN(score)) {
+        return Promise.reject(new Error('Invalid user data'))
+      }
       // Update state
       commit('SET_ID', id)
-      commit('SET_NAME', username)
+      commit('SET_NAME', storageName)
       commit('SET_SCORE', score)
       return Promise.resolve()
     },

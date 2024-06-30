@@ -1,13 +1,8 @@
 <template>
   <div id="app">
     <router-view />
-    <alert-box />
   </div>
 </template>
-
-<script lang="ts" setup>
-import AlertBox from '@/components/AlertBox.vue'
-</script>
 
 <style>
 #app {

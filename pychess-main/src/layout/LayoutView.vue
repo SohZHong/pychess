@@ -27,8 +27,8 @@
                 <template v-else>
                     <router-link class="light-button" to="/play">Play Now</router-link>
                     <div class="profile-dropdown">
-                        <button class="dropdown-toggle">{{ username }}</button>
-                        <div class="dropdown-menu">
+                        <div @click="toggleDropdown" class="light-button dropdown-toggle">{{ username }}</div>
+                        <div class="dropdown-menu" :class="{ none: !isDropdownOpen }">
                             <router-link to="settings">Settings</router-link>
                             <a @click.prevent="handleLogout">Logout</a>
                         </div>
@@ -53,6 +53,7 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
 const isSideBarOpen = ref<boolean>(false)
+const isDropdownOpen = ref<boolean>(false)
 const router = useRouter()
 const store = useStore()
 const username = computed(() => store.state.user.name)
@@ -64,6 +65,10 @@ const handleHamburgerClick = () => {
 
 const handleCloseSideBar = () => {
   isSideBarOpen.value = false
+}
+
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value
 }
 
 const handleLogout = async () => {
@@ -100,10 +105,9 @@ const handleLogout = async () => {
     justify-content: space-between;
     height: var(--header-height);
     padding: 0 1rem;
-    /* border-bottom: 1px solid var(--el-menu-border-color); */
 }
 
-.navbar-wrapper .hero-left-container {
+.navbar-wrapper .hero-left-container, .hero-right-container{
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
@@ -111,6 +115,47 @@ const handleLogout = async () => {
 
 .navbar-wrapper .hero-right-container > a {
     margin: 5px;
+}
+
+.navbar-wrapper .profile-dropdown {
+    position: relative;
+}
+
+.navbar-wrapper .profile-dropdown .dropdown-toggle {
+    width: 200px;
+    overflow:hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 0.5em 1em;
+}
+
+.navbar-wrapper .profile-dropdown .dropdown-menu {
+    position: absolute;
+    width: 200px;
+    top: 45px;
+    background: white;
+    overflow-y: auto;
+    border-radius: 10px;
+    padding: 0.5em 1em;
+    box-shadow: var(--border-light-drop-shadow);
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+}
+
+.navbar-wrapper .profile-dropdown .dropdown-menu > * {
+    cursor: pointer;
+    margin: 10px 0;
+    color: var(--primary-brand-color);
+    transition: font-weight .3 ease-in-out;
+}
+
+.navbar-wrapper .profile-dropdown .dropdown-menu > *:hover {
+    font-weight: bold;
+}
+
+.navbar-wrapper .profile-dropdown .dropdown-menu.none {
+    display: none;
 }
 
 @media only screen and (max-width: 576px) {

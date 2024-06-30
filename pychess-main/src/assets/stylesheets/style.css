@@ -33,6 +33,12 @@ ul, li {
     list-style-type: none;
 }
 
+button {
+    border: none;
+    background-color: transparent;
+    font-family: "SF Pro Text";
+}
+
 .hidden {
     visibility: hidden;
 }

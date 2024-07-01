@@ -3,10 +3,13 @@
         <side-bar-view v-if="loggedIn" :is-open="isSideBarOpen" :handle-close-side-bar="handleCloseSideBar">
             <ul class="sidebar-items">
                 <li class="sidebar-item">
-                    <router-link to="/">Home</router-link>
+                    <router-link to="/dashboard">Home</router-link>
                 </li>
                 <li class="sidebar-item">
                     <router-link to="/leaderboard">Leaderboard</router-link>
+                </li>
+                <li class="sidebar-item">
+                    <router-link to="/support">Support</router-link>
                 </li>
             </ul>
         </side-bar-view>
@@ -15,7 +18,7 @@
                 <hamburger-view v-if="loggedIn" :handle-hamburger-click="handleHamburgerClick"/>
                 <div class="logo-container">
                     <a href="/">
-                        <img class="logo" src="@/assets/images/logo-no-background.svg" />
+                        <logo-icon class="logo"/>
                     </a>
                 </div>
             </div>
@@ -49,6 +52,7 @@ import { computed, ref } from 'vue'
 import AppMain from './components/AppMain.vue'
 import HamburgerView from './components/menu/HamburgerView.vue'
 import SideBarView from './components/menu/SideBarView.vue'
+import LogoIcon from '@/components/LogoIcon.vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 

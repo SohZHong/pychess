@@ -7,6 +7,7 @@
         v-model="inputValue"
         :placeholder="placeholder"
         :required="required"
+        :disabled="disabled"
         @input="updateValue"
         autocomplete="off"
         />
@@ -23,6 +24,7 @@ const props = defineProps<{
   placeholder: string
   icon: string
   required: boolean
+  disabled: boolean
 }>()
 
 const emits = defineEmits(['update:modelValue'])

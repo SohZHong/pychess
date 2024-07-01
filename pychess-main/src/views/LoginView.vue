@@ -11,6 +11,7 @@
                     v-model="loginForm.username"
                     icon="user"
                     required
+                    :disabled="false"
                 />
             </div>
             <div class="input-container">
@@ -22,6 +23,7 @@
                     v-model="loginForm.password"
                     icon="lock"
                     required
+                    :disabled="false"
                 />
             </div>
             <button class="login-button" type="submit">Login</button>
@@ -56,7 +58,7 @@ const handleSubmitForm = async () => {
   await login({ username, password })
     .then(() => {
     // Navigate user to homepage
-      router.push('/')
+      router.push('/dashboard')
     }).catch(err => {
       console.error(err)
     })

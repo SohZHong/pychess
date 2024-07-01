@@ -1,50 +1,64 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import LayoutView from '@/layout/LayoutView.vue'
+import store from '@/store'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'home',
-    component: () => import('@/views/HomeView.vue')
+    component: () => import('@/views/HomeGuestView.vue')
   },
   {
     path: '/login',
-    component: LayoutView,
-    children: [
-      {
-        path: '',
-        name: 'login',
-        component: () => import('@/views/LoginView.vue')
-      }
-    ]
+    component: () => import('@/views/LoginView.vue')
   },
   {
     path: '/register',
-    component: LayoutView,
-    children: [
-      {
-        path: '',
-        name: 'register',
-        component: () => import('@/views/RegisterView.vue')
-      }
-    ]
+    component: () => import('@/views/RegisterView.vue')
   },
   {
-    path: '/about',
+    path: '/dashboard',
     component: LayoutView,
     children: [
       {
         path: '',
         name: 'dashboard',
-        component: () => import('@/views/AboutView.vue')
+        component: () => import('@/views/HomeView.vue')
       }
-    ]
+    ],
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/play',
+    component: LayoutView,
+    children: [
+      {
+        path: '',
+        name: 'play',
+        component: () => import('@/views/PlayView.vue')
+      }
+    ],
+    meta: { requiresAuth: true }
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeEach(async (to, from, next) => {
+  // Check if route requires authentication
+  if (to.meta.requiresAuth) {
+    try {
+      await store.dispatch('getUserData')
+      next() // Proceed to the route if user data is successfully fetched
+    } catch (error) {
+      console.error('Failed to fetch user data:', error)
+      next('/login') // Redirect to login page
+    }
+  } else {
+    next() // Proceed to the route if it doesn't require authentication
+  }
 })
 
 export default router

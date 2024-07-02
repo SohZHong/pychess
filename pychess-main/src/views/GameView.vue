@@ -3,21 +3,23 @@
         <button class="light-button">Print QR</button>
         <button class="light-button">Start Match</button>
     </div>
-    <div class="chess-container">
-        <h1 class="color">White</h1>
-        <div class="qr-container">
-            <div v-for="question in whiteQuestions" :key="question.id">
-                <img :src="question.code" />
-                <span>{{ question.name }}</span>
+    <div class="chess-section">
+        <div class="chess-container">
+            <h1 class="color">White</h1>
+            <div class="qr-container">
+                <div class="qr" v-for="question in whiteQuestions" :key="question.id">
+                    <img :src="question.code" alt="Question QR Code"/>
+                    <span>{{ question.name }}</span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="chess-container">
-        <h1 class="color">Black</h1>
-        <div class="qr-container">
-            <div v-for="question in blackQuestions" :key="question.id">
-                <img :src="question.code" />
-                <span>{{ question.name }}</span>
+        <div class="chess-container">
+            <h1 class="color">Black</h1>
+            <div class="qr-container">
+                <div class="qr" v-for="question in blackQuestions" :key="question.id">
+                    <img :src="question.code" alt="Question QR Code"/>
+                    <span>{{ question.name }}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -54,4 +56,52 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.button-container {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 1rem;
+}
+
+.button-container > button {
+    font-size: var(--font-size);
+    width: 200px;
+}
+
+.chess-section {
+    padding: 1rem;
+}
+
+.chess-section .chess-container {
+    display: flex;
+    flex-direction: column;
+    margin: 2rem 0;
+}
+
+.chess-section .chess-container .qr-container{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: baseline;
+    gap: 1rem;
+}
+
+.qr-container .qr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: baseline;
+}
+
+.qr-container .qr > img{
+    width: 150px;
+    height: auto;
+}
+
+@media only screen and (max-width: 576px) {
+  .qr-container {
+    justify-content: center;
+  }
+}
 </style>

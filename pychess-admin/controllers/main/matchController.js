@@ -1,5 +1,5 @@
 const ResponseHelper = require('../../models/ResponseHelper');
-const { listUserMatchHistory } = require('../../services/main/matchService');
+const { listUserMatchHistory, insertMatchHistory } = require('../../services/main/matchService');
 const { getQuestions } = require('../../services/main/questionService');
 // Start A Match
 const startMatch = async (req, res) => {
@@ -26,4 +26,17 @@ const getUserMatchHistory = async (req, res) => {
     }
 };
 
-module.exports = { startMatch, getUserMatchHistory }
+// Save Match
+const saveMatch = async (req, res) => {
+    const response = new ResponseHelper(res);
+    try {
+        const { winner, loser } = req.body;
+        await insertMatchHistory(winner, loser);
+        response.success('Match Saved Successfully');
+    } catch (error) {
+        console.error(error);
+        response.error('Error saving match');
+    }
+}
+
+module.exports = { startMatch, getUserMatchHistory, saveMatch }

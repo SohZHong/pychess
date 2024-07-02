@@ -15,10 +15,10 @@ const listUserMatchHistory = async (user) => {
     SELECT w.name AS winner_name, l.name AS loser_name, mh.end_time
     FROM match_history mh
     JOIN user w ON mh.winner_id = w.id
-    JOIN loser l ON mh.loser_id = l.id
+    JOIN user l ON mh.loser_id = l.id
     WHERE mh.winner_id = ? OR mh.loser_id = ?
     `
-    const res = await dbQuery(sql, [user])
+    const res = await dbQuery(sql, [user, user])
     return res.rows
 }
 

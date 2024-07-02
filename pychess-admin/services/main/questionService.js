@@ -34,26 +34,30 @@ const getQuestions = async () => {
     const questionDetails = await dbMultiQuery(queries, params);
     const questionsMap = new Map();
 
-    // Format the results
-    questionDetails.rows.forEach(row => {
-        // Retrieve the values based on key
-        const { id, text, score, name, answer, is_correct } = row;
-        // Separate each question
-        if (!questionsMap.has(text)){
-            questionsMap.set(text, {
-                id,
-                text,
-                score,
-                name,
-                answers: []
+    questionDetails.forEach(result => {
+        // Check if result.rows is defined and is an array
+        if (result && result.rows && Array.isArray(result.rows)) {
+            result.rows.forEach(row => {
+                const { id, text, score, name, answer, is_correct } = row;
+                // Separate each question
+                if (!questionsMap.has(text)){
+                    questionsMap.set(text, {
+                        id,
+                        text,
+                        score,
+                        name,
+                        answers: []
+                    });
+                }
+                // Add answers to answer array of each question
+                questionsMap.get(text).answers.push({
+                    answer,
+                    is_correct: is_correct
+                });
             });
         }
-        // Add answers to answer array of each question
-        questionsMap.get(text).answers.push({
-            answer,
-            is_correct: is_correct
-        });
-    })
+    });
+
     return Array.from(questionsMap.values());
 }
 

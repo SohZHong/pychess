@@ -4,7 +4,7 @@ const getQuestions = async () => {
     const queries = [];
     const params = [];
     const sql = `
-    SELECT q.id, q.text, q.score, cp.name, a.answer, a.is_correct 
+    SELECT q.id, q.text, q.score, cp.name, cp.question_type_id, a.answer, a.is_correct 
     FROM question q
     JOIN chess_piece cp ON q.chess_piece_id = cp.id
     JOIN answer a ON a.question_id = q.id
@@ -38,7 +38,7 @@ const getQuestions = async () => {
         // Check if result.rows is defined and is an array
         if (result && result.rows && Array.isArray(result.rows)) {
             result.rows.forEach(row => {
-                const { id, text, score, name, answer, is_correct } = row;
+                const { id, text, score, name, question_type_id, answer, is_correct } = row;
                 // Separate each question
                 if (!questionsMap.has(text)){
                     questionsMap.set(text, {
@@ -46,6 +46,7 @@ const getQuestions = async () => {
                         text,
                         score,
                         name,
+                        question_type_id,
                         answers: []
                     });
                 }

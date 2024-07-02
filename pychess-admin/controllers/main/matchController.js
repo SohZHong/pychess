@@ -1,12 +1,14 @@
 const ResponseHelper = require('../../models/ResponseHelper');
 const { listUserMatchHistory, insertMatchHistory } = require('../../services/main/matchService');
 const { getQuestions } = require('../../services/main/questionService');
+const { generateQRCodes } = require('../../utils/qrUtils');
 // Start A Match
 const startMatch = async (req, res) => {
     const response = new ResponseHelper(res);
     try {
         const questions = await getQuestions();
-        response.success('Questions Retrieved Successfully', questions);
+        const qrCodes = await generateQRCodes(questions)
+        response.success('Questions Retrieved Successfully', qrCodes);
     } catch (error) {
         console.error(error);
         response.error('Error retrieving questions');

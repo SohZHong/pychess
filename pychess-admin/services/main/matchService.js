@@ -12,7 +12,7 @@ const insertMatchHistory = async (winner, loser) => {
 
 const listUserMatchHistory = async (user) => {
     const sql = `
-    SELECT w.name AS winner_name, l.name AS loser_name, mh.end_time
+    SELECT w.name AS winner, l.name AS loser, mh.end_time AS end
     FROM match_history mh
     JOIN user w ON mh.winner_id = w.id
     JOIN user l ON mh.loser_id = l.id

@@ -1,9 +1,9 @@
 <template>
     <div class="button-container">
-        <button class="light-button">Print QR</button>
+        <button class="light-button" @click.prevent="handleDownloadQR">Print QR</button>
         <button class="light-button">Start Match</button>
     </div>
-    <div class="chess-section">
+    <div class="chess-section" ref="chessSection">
         <div class="chess-container">
             <h1 class="color">White</h1>
             <div class="qr-container">
@@ -28,6 +28,7 @@
 <script lang="ts" setup>
 import { QuestionProps, getQuestions } from '@/api/match'
 import { computed, onMounted, ref } from 'vue'
+import { downloadScreenshot } from '@/utils/screenshot'
 
 const questions = ref<QuestionProps[]>([])
 // Divide questions to black and white
@@ -38,6 +39,15 @@ const whiteQuestions = computed(() => {
 const blackQuestions = computed(() => {
   return questions.value.slice(Math.ceil(questions.value.length / 2))
 })
+
+// Reference to the chess section
+const chessSection = ref<HTMLDivElement | null>(null)
+
+// Download QR Code
+const handleDownloadQR = async () => {
+  if (!chessSection.value) return
+  await downloadScreenshot(chessSection.value, 'image/png', 'qr-codes.png')
+}
 
 onMounted(async () => {
   try {

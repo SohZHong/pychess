@@ -45,6 +45,18 @@ const routes: Array<RouteRecordRaw> = [
       }
     ],
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/game',
+    component: LayoutView,
+    children: [
+      {
+        path: '',
+        name: 'game',
+        component: () => import('@/views/GameView.vue')
+      }
+    ],
+    meta: { requiresAuth: true }
   }
 ]
 

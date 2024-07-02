@@ -1,4 +1,4 @@
-import { login, logout } from '@/api/login'
+import { login, logout } from '@/api/auth'
 import { getCurrentUser } from '@/api/user'
 import { ActionContext, Module } from 'vuex'
 import { State, UserModuleState } from '../index'
@@ -38,7 +38,7 @@ const user: Module<UserModuleState, State> = {
     // Define the type for the context parameter
     async Login ({ commit }: ActionContext<UserModuleState, State>, userInfo: { username: string; password: string }): Promise<void> {
       const { username, password } = userInfo
-      const response = await login(username, password)
+      const response = await login({ username, password })
       const { code, message } = response.data
       if (code === 200) {
         commit('SET_NAME', username)

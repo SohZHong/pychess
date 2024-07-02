@@ -1,6 +1,6 @@
 <template>
     <div class="input-field">
-        <font-awesome-icon :icon="icon" />
+        <font-awesome-icon v-if="icon" :icon="icon" />
         <input
         :type="type"
         :name="name"
@@ -21,8 +21,8 @@ const props = defineProps<{
   modelValue: string
   type: string
   name: string
-  placeholder: string
-  icon: string
+  placeholder?: string
+  icon?: string
   required: boolean
   disabled: boolean
 }>()

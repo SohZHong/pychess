@@ -13,7 +13,7 @@
       <h3>
         Score: <span class="score-display">{{ user.score }}</span>
       </h3>
-      <router-link to="/play" class="light-button">
+      <router-link to="/play" class="light-button play-button">
         Play Now!
       </router-link>
     </div>
@@ -53,7 +53,7 @@ const user = computed(() => store.state.user)
 }
 
 .play-container .control-container > *{
-  margin: 1rem 0;
+  margin: 2rem 0;
 }
 
 .play-container .control-container .score-display{

@@ -5,7 +5,14 @@ import store from '@/store'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    component: () => import('@/views/HomeGuestView.vue')
+    component: LayoutView,
+    children: [
+      {
+        path: '',
+        name: 'dashboard',
+        component: () => import('@/views/HomeGuestView.vue')
+      }
+    ]
   },
   {
     path: '/login',

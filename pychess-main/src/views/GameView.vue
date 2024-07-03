@@ -51,12 +51,20 @@ const handleDownloadQR = async () => {
 
 onMounted(async () => {
   try {
-    const res = await getQuestions()
-    const { data } = res.data
-    if (Array.isArray(data)) {
-      questions.value = data
+    const questionSession = sessionStorage.getItem('questions')
+    if (questionSession) {
+      // retrieve from session to reduce database read
+      questions.value = JSON.parse(questionSession)
     } else {
-      console.error('Unexpected response format:', res.data)
+      const res = await getQuestions()
+      const { data } = res.data
+      if (Array.isArray(data)) {
+        questions.value = data
+        // set session storage to prevent additional database retrieval
+        sessionStorage.setItem('questions', JSON.stringify(data))
+      } else {
+        console.error('Unexpected response format:', res.data)
+      }
     }
   } catch (error) {
     console.error('Error fetching questions:', error)

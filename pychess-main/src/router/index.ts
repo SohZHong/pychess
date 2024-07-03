@@ -57,6 +57,18 @@ const routes: Array<RouteRecordRaw> = [
       }
     ],
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/match',
+    component: LayoutView,
+    children: [
+      {
+        path: '',
+        name: 'match',
+        component: () => import('@/views/MatchView.vue')
+      }
+    ],
+    meta: { requiresAuth: true }
   }
 ]
 

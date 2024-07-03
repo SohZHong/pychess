@@ -13,26 +13,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, defineProps, defineExpose } from 'vue'
 
-const dialog = ref<HTMLDialogElement>();
+const dialog = ref<HTMLDialogElement>()
 const props = defineProps({
   classes: {
     type: String,
-    default: "",
-  },
-});
+    default: ''
+  }
+})
 
-const visible = ref(false);
+const visible = ref(false)
 
 const showModal = () => {
-  dialog.value?.showModal();
-  visible.value = true;
-};
+  dialog.value?.showModal()
+  visible.value = true
+}
 // Expose values for easier usage
 defineExpose({
   show: showModal,
   close: (returnVal?: string): void => dialog.value?.close(returnVal),
-  visible,
-});
+  visible
+})
 </script>

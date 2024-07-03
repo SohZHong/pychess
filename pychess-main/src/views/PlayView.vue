@@ -10,7 +10,7 @@
             <input-field
                 type="text"
                 name="player1"
-                v-model="playerForm.player1"
+                v-model="playerForm.player1.name"
                 required
                 disabled
               />
@@ -22,7 +22,7 @@
                 type="text"
                 name="player2"
                 placeholder="Please enter Player 2"
-                v-model="playerForm.player2"
+                v-model="playerForm.player2.name"
                 required
                 :disabled="false"
               />
@@ -46,17 +46,27 @@ import { useStore } from 'vuex'
 import InputField from '@/components/InputField.vue'
 import { encrypt } from '@/utils/crypto'
 import router from '@/router'
+import { getUserByUsername } from '@/api/user'
+import { PlayerProps } from '@/api/match'
 
 interface PlayerForm {
-  player1: string,
-  player2: string
+  player1: PlayerProps,
+  player2: PlayerProps
 }
 
 const store = useStore()
-const name = computed(() => store.state.user.name)
+const user = computed(() => store.state.user)
 const playerForm = reactive<PlayerForm>({
-  player1: name.value,
-  player2: ''
+  player1: {
+    id: user.value.id,
+    name: user.value.name,
+    score: user.value.score
+  },
+  player2: {
+    id: undefined,
+    name: '',
+    score: 0
+  }
 })
 
 const handleCancel = () => {
@@ -64,9 +74,23 @@ const handleCancel = () => {
 }
 
 const handleSubmitForm = async () => {
-  const player1 = encrypt(playerForm.player1)
-  const player2 = encrypt(playerForm.player2)
-  router.push({ path: '/game', query: { player1, player2 } })
+  // Check if player 2 exists
+  const res = await getUserByUsername(playerForm.player2.name)
+  const { data } = res.data
+  if (data) {
+    // Complete the data
+    playerForm.player2.id = data.id
+    playerForm.player2.score = data.score
+    // Encrypt to prevent misuse
+    const player1 = encrypt(JSON.stringify(playerForm.player1))
+    const player2 = encrypt(JSON.stringify(playerForm.player2))
+    router.push({ path: '/game', query: { player1, player2 } })
+  } else {
+    await store.dispatch('showAlert', {
+      message: 'Player 2 Does Not Exist!',
+      header: 'Invalid Player 2'
+    })
+  }
 }
 </script>
 

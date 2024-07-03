@@ -32,3 +32,14 @@ export function updateUser (
     data
   })
 }
+
+// Find if user exists
+export function getUserByUsername (
+  username: string
+) {
+  return request({
+    url: '/api/getUserByUsername',
+    method: 'get',
+    params: username
+  })
+}

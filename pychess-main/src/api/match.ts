@@ -2,19 +2,33 @@ import request from '@/utils/request'
 
 export interface AnswerProps {
   answer: string,
-  isCorrect: string
+  is_correct: string
 }
 
 export interface QuestionProps {
+  id: number,
+  text: string,
+  score: number,
+  name: string,
+  answers: Array<AnswerProps>
+}
+
+export interface QuestionQrProps {
   id: number,
   name: string,
   code: string
 }
 
 export interface MatchProps {
-  winner: string,
-  loser: string,
+  winner: number,
+  loser: number,
   end?: Date
+}
+
+export interface PlayerProps {
+  id: number | undefined,
+  name: string,
+  score: number
 }
 
 export function getQuestions (

@@ -18,7 +18,7 @@
 </template>
 <!-- https://gruhn.github.io/vue-qrcode-reader/demos/FullDemo.html -->
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, defineEmits } from 'vue'
 import { QrcodeStream } from 'vue-qrcode-reader'
 
 interface CameraOptions {
@@ -52,7 +52,7 @@ const constraintSelection = ref<CameraConstraints[]>(constraintOptions)
 const onCameraReady = async () => {
   // PS: Error occurs on IOS if user does not give permission
   // Get all available recording devices
-  const devices = await navigator.mediaDevices.enumerateDevices();
+  const devices = await navigator.mediaDevices.enumerateDevices()
   const videoDevices = devices.filter(({ kind }) => kind === 'videoinput')
 
   // Add them into the available options

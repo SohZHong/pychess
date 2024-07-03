@@ -1,11 +1,11 @@
 <template>
     <div class="button-container">
         <button class="light-button" @click.prevent="handleDownloadQR">Print QR</button>
-        <button class="light-button">Start Match</button>
+        <button class="light-button" @click="handleStartMatch">Start Match</button>
     </div>
     <div class="chess-section" ref="chessSection">
         <div class="chess-container">
-            <h1 class="color">White</h1>
+            <h1 class="color">White: {{ player1?.name }}</h1>
             <div class="qr-container">
                 <div class="qr" v-for="question in whiteQuestions" :key="question.id">
                     <img :src="question.code" alt="Question QR Code"/>
@@ -14,7 +14,7 @@
             </div>
         </div>
         <div class="chess-container">
-            <h1 class="color">Black</h1>
+            <h1 class="color">Black: {{ player2?.name }}</h1>
             <div class="qr-container">
                 <div class="qr" v-for="question in blackQuestions" :key="question.id">
                     <img :src="question.code" alt="Question QR Code"/>
@@ -26,11 +26,19 @@
 </template>
 
 <script lang="ts" setup>
-import { QuestionProps, getQuestions } from '@/api/match'
+import { PlayerProps, QuestionQrProps, getQuestions } from '@/api/match'
 import { computed, onMounted, ref } from 'vue'
 import { downloadScreenshot } from '@/utils/screenshot'
+import { useRoute, useRouter } from 'vue-router'
+import { decrypt } from '@/utils/crypto'
 
-const questions = ref<QuestionProps[]>([])
+const questions = ref<QuestionQrProps[]>([])
+const player1 = ref<PlayerProps>()
+const player2 = ref<PlayerProps>()
+const route = useRoute()
+const router = useRouter()
+// Reference to the chess section
+const chessSection = ref<HTMLDivElement | null>(null)
 // Divide questions to black and white
 const whiteQuestions = computed(() => {
   return questions.value.slice(0, Math.ceil(questions.value.length / 2))
@@ -40,13 +48,14 @@ const blackQuestions = computed(() => {
   return questions.value.slice(Math.ceil(questions.value.length / 2))
 })
 
-// Reference to the chess section
-const chessSection = ref<HTMLDivElement | null>(null)
-
 // Download QR Code
 const handleDownloadQR = async () => {
   if (!chessSection.value) return
   await downloadScreenshot(chessSection.value, 'image/png', 'qr-codes.png')
+}
+
+const handleStartMatch = () => {
+  router.push({ name: 'match', params: route.params, query: route.query })
 }
 
 onMounted(async () => {
@@ -65,6 +74,17 @@ onMounted(async () => {
       } else {
         console.error('Unexpected response format:', res.data)
       }
+    }
+    const encryptedPlayer1 = route.query.player1 as string
+    const encryptedPlayer2 = route.query.player2 as string
+
+    try {
+      const decryptedPlayer1 = JSON.parse(decrypt(encryptedPlayer1))
+      const decryptedPlayer2 = JSON.parse(decrypt(encryptedPlayer2))
+      player1.value = decryptedPlayer1
+      player2.value = decryptedPlayer2
+    } catch (error) {
+      console.error('Error decrypting player data:', error)
     }
   } catch (error) {
     console.error('Error fetching questions:', error)

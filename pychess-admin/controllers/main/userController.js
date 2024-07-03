@@ -14,4 +14,17 @@ const updateAppUser = async( req, res ) => {
     }
 }
 
-module.exports = { updateAppUser };
+// Get User by Username
+const retrieveUserByUsername = async ( req, res ) => {
+    const response = new ResponseHelper(res);
+    try {
+        const { username } = req.body;
+        const user = await getUserByUsername(username);
+        response.success('User Retrieved Successfully', user);
+    } catch (error) {
+        console.error(error);
+        response.error('Username does not exist!');
+    }
+}
+
+module.exports = { updateAppUser, retrieveUserByUsername };

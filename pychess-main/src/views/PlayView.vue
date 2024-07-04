@@ -80,7 +80,6 @@ const handleSubmitForm = async () => {
     const { data } = res.data
     if (data != null) {
       // Complete the data
-      console.log(data)
       playerForm.player2.id = data.id
       playerForm.player2.score = data.score
       // Encrypt to prevent misuse

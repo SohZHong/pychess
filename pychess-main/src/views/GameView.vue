@@ -2,6 +2,7 @@
     <div class="button-container">
         <button class="light-button" @click.prevent="handleDownloadQR">Print QR</button>
         <button class="light-button" @click="handleStartMatch">Start Match</button>
+        <button class="light-button" @click="handleCancelMatch">Cancel Match</button>
     </div>
     <div class="chess-section" ref="chessSection">
         <div class="chess-container">
@@ -58,6 +59,12 @@ const handleStartMatch = () => {
   router.push({ name: 'match', params: route.params, query: route.query })
 }
 
+const handleCancelMatch = () => {
+  // Remove questions
+  sessionStorage.removeItem('questions')
+  router.back()
+}
+
 onMounted(async () => {
   try {
     const questionSession = sessionStorage.getItem('questions')
@@ -69,6 +76,7 @@ onMounted(async () => {
       const { data } = res.data
       if (Array.isArray(data)) {
         questions.value = data
+        console.log(data)
         // set session storage to prevent additional database retrieval
         sessionStorage.setItem('questions', JSON.stringify(data))
       } else {

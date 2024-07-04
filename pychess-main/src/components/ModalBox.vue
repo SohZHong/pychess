@@ -2,11 +2,11 @@
   <dialog
     ref="dialog"
     @close="visible = false"
-    class="modal-dialog"
+    class="modal"
   >
     <div
     v-if="visible"
-    :class="{[props.classes]: props.classes}"
+    :class="props.class"
     >
       <slot></slot>
     </div>
@@ -18,7 +18,7 @@ import { ref, defineProps, defineExpose } from 'vue'
 
 const dialog = ref<HTMLDialogElement>()
 const props = defineProps({
-  classes: {
+  class: {
     type: String,
     default: ''
   }
@@ -39,9 +39,7 @@ defineExpose({
 </script>
 
 <style scoped>
-.modal-dialog {
-  width: 550px;
-  height: 550px;
+.modal {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -53,9 +51,9 @@ defineExpose({
 }
 
 @media only screen and (max-width: 576px) {
-  .modal-dialog {
+  .modal {
     width: 350px;
-    height: 450px;
+    height: fit-content;
   }
 }
 </style>

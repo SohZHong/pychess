@@ -5,35 +5,75 @@
         />
         <form @submit.prevent="handleSelectWinner" class="result-container">
           <h3>Please Select Winner:</h3>
-          <label>
-              <input type="radio" v-model="matchForm.winner" :name="player1?.name" :value="player1?.id" required/>
+          <div class="result-selector">
+            <label>
+              <input type="radio" v-model="matchForm.winner" :name="player1?.name" :value="player1?.id" checked/>
               {{ player1?.name }}
-          </label>
-          <label>
-              <input type="radio" v-model="matchForm.winner" :name="player2?.name" :value="player2?.id" required/>
-              {{ player2?.name }}
-          </label>
+            </label>
+            <label>
+                <input type="radio" v-model="matchForm.winner" :name="player2?.name" :value="player2?.id"/>
+                {{ player2?.name }}
+            </label>
+          </div>
+          <button type="submit" class="start-button light-button">
+            Start Answering!
+          </button>
         </form>
     </modal-box>
     <button class="light-button" @click="handleSubmitAnswers">Submit Answers</button>
     <div class="question-section">
-        <form @submit.prevent="handleSubmitAnswers">
-        <div class="question-container" v-for="question in questions" :key="question.id">
-            <div>{{ question.text }}</div>
-            <div v-for="answer in question.answers" :key="answer.answer">
-                <label>
-                    <input
-                    type="radio"
-                    :name="'question-' + question.id"
-                    :value="answer.answer"
-                    v-model="userAnswers[question.id]"
-                    />
-                    {{ answer.answer }}
-                </label>
-            </div>
+    <form class="question-form" @submit.prevent="handleSubmitAnswers">
+      <div class="question-container" v-for="question, index in questions" :key="question.id">
+        <h4 class="question-number">{{ index + 1 }}.</h4>
+        <h3>{{ question.text }}</h3>
+        <div class="answer-container">
+          <!-- MCQ -->
+          <template v-if="question.question_type_id === 1">
+            <template v-for="answer in question.answers" :key="answer.answer">
+              <label>
+                <input
+                  type="radio"
+                  :name="'question-' + question.id"
+                  :value="answer.answer"
+                  v-model="userAnswers[question.id]"
+                />
+                {{ answer.answer }}
+              </label>
+            </template>
+          </template>
+          <!-- Short Response -->
+          <template v-else-if="question.question_type_id === 2">
+            <textarea
+              placeholder="Please enter your answer"
+              :name="'question-' + question.id"
+              v-model="userAnswers[question.id]"
+            ></textarea>
+          </template>
+          <!-- True/False -->
+          <template v-else-if="question.question_type_id === 3">
+            <label>
+              <input
+                type="radio"
+                :name="'question-' + question.id"
+                value="true"
+                v-model="userAnswers[question.id]"
+              />
+              True
+            </label>
+            <label>
+              <input
+                type="radio"
+                :name="'question-' + question.id"
+                value="false"
+                v-model="userAnswers[question.id]"
+              />
+              False
+            </label>
+          </template>
         </div>
-        </form>
-    </div>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -68,6 +108,7 @@ const handleDetect = async (detectedString: { map: (arg0: (code: any) => any) =>
   try {
     // QR decoded as Array
     const question: QuestionProps = JSON.parse(detectedString.map((code) => code.rawValue))
+    console.log(question)
     questions.value.push(question)
   } catch (error) {
     console.error('Error Parsing QR Code', error)
@@ -81,6 +122,7 @@ const handleSelectWinner = async () => {
   } else {
     matchForm.loser = player1.value?.id
   }
+  modal.value?.close()
 }
 
 const handleSubmitAnswers = async () => {
@@ -141,5 +183,100 @@ onUnmounted(async () => {
 </script>
 
 <style scoped>
+.result-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+}
 
+.result-container > h3 {
+  color: var(--primary-brand-color);
+}
+
+.result-container .result-selector {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.result-container  .start-button {
+  font-size: var(--font-size);
+}
+
+.question-section {
+  padding: 1rem;
+}
+
+.question-section .question-form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: baseline;
+  gap: 1rem;
+}
+
+.question-form .question-container {
+  width: 350px;
+  min-height: 200px;
+  box-shadow: var(--border-light-drop-shadow);
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.question-container .question-number {
+  color: var(--primary-brand-color);
+  margin-right: auto;
+}
+
+.question-container > h3 {
+  font-size: calc(var(--font-size) + 1px);
+  text-align: justify;
+}
+
+.question-container .answer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: baseline;
+  gap: 0.75rem;
+}
+
+/* For MCQ and True/False */
+.answer-container > label {
+  display: flex;
+  align-items: center;
+  justify-content: baseline;
+  width: 100%;
+  column-gap: 1rem;
+}
+
+/* For Short Response */
+.answer-container > textarea {
+  outline: none;
+  box-shadow: var(--button-light-drop-shadow);
+  border: none;
+  font-family: "SF Pro Text", sans-serif;
+  font-size: var(--font-size);
+  padding: 1rem;
+  width: 90%;
+  resize: vertical;
+}
+
+.answer-container > textarea:focus {
+  outline: none;
+}
+
+@media only screen and (max-width: 576px) {
+  .question-form {
+    justify-content: center;
+  }
+}
 </style>

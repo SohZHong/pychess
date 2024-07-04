@@ -8,6 +8,7 @@ export interface AnswerProps {
 export interface QuestionProps {
   id: number,
   text: string,
+  question_type_id: number,
   score: number,
   name: string,
   answers: Array<AnswerProps>

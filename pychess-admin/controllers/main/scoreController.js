@@ -3,10 +3,11 @@ const { insertScoreTransaction } = require('../../services/main/scoreService');
 // Insert Score  
 const saveUserScore = async (req, res) => {
     const response = new ResponseHelper(res);
-    const { player1, player2 } = response.data
+    const { player1, player2 } = req.body
     try {
-        await insertScoreTransaction(player1.userId, player1.score);
-        await insertScoreTransaction(player2.userId, player2.score);
+        const players = [player1.userId, player2.userId];
+        const scores = [player1.score, player2.score]
+        await insertScoreTransaction(players, scores);
         response.success('Score Inserted Successfully');
     } catch (error) {
         console.error(error);

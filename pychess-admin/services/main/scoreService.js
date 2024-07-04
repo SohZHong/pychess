@@ -1,12 +1,50 @@
-const { dbQuery } = require('../../utils/dbUtils');
+const { dbQuery, dbMultiQuery } = require('../../utils/dbUtils');
 
-const insertScoreTransaction = async (userId, score) => {
-    const sql = `
+const insertScoreTransaction = async (userIds, scores) => {
+    const queries = [];
+    const params = [];
+
+    // Check if userIds and scores are arrays
+    const isMultiple = Array.isArray(userIds) && Array.isArray(scores);
+
+    // Add into score_transaction table
+    const scoreSql = `
     INSERT INTO score_transaction
     (user_id, score_acquired)
     VALUES (?, ?)
     `;
-    const res = await dbQuery(sql, [userId, score]);
+
+    // Update user score
+    const userSql = `
+    UPDATE user
+    SET score = score + ?
+    WHERE id = ?
+    `;
+
+    if (isMultiple) {
+        // Ensure the length of userIds and scores are the same
+        if (userIds.length !== scores.length) {
+            throw new Error('The length of userIds and scores must be the same.');
+        }
+
+
+        userIds.forEach((userId, index) => {
+            const score = scores[index];
+            const scoreParams = [userId, score];
+            const userParams = [score, userId];
+
+            queries.push(scoreSql, userSql);
+            params.push(scoreParams, userParams);
+        });
+    } else {
+        const scoreParams = [userIds, scores];
+        const userParams = [scores, userIds];
+
+        queries.push(scoreSql, userSql);
+        params.push(scoreParams, userParams);
+    }
+
+    const res = await dbMultiQuery(queries, params);
 
     return res.rows;
 }

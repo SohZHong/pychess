@@ -38,7 +38,7 @@ const getUserMatchHistory = async (req, res) => {
 };
 
 // Save Match
-const saveMatch = async (req, res) => {
+const saveMatchHistory = async (req, res) => {
     const response = new ResponseHelper(res);
     try {
         const { winner, loser } = req.body;
@@ -50,4 +50,4 @@ const saveMatch = async (req, res) => {
     }
 }
 
-module.exports = { startMatch, getUserMatchHistory, saveMatch }
+module.exports = { startMatch, getUserMatchHistory, saveMatchHistory }

@@ -40,6 +40,6 @@ export function getUserByUsername (
   return request({
     url: '/api/getUserByUsername',
     method: 'get',
-    params: username
+    params: { username }
   })
 }

@@ -1,4 +1,4 @@
-const { updateUser } = require('../../services/main/userService');
+const { updateUser, getUserByUsername } = require('../../services/main/userService');
 const ResponseHelper = require('../../models/ResponseHelper');
 
 // Update User
@@ -18,7 +18,8 @@ const updateAppUser = async( req, res ) => {
 const retrieveUserByUsername = async ( req, res ) => {
     const response = new ResponseHelper(res);
     try {
-        const { username } = req.body;
+        const username = req.query.username;
+        console.log(username)
         const user = await getUserByUsername(username);
         response.success('User Retrieved Successfully', user);
     } catch (error) {

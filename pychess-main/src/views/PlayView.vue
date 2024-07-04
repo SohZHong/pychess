@@ -3,7 +3,7 @@
       <h1>Enter Opponent Details</h1>
     </div>
     <div class="play-container">
-      <form @submit="handleSubmitForm" class="player-form">
+      <form @submit.prevent="handleSubmitForm" class="player-form">
         <div class="input-wrapper">
           <div class="input-container">
             <label for="player1">Player 1</label>
@@ -75,21 +75,26 @@ const handleCancel = () => {
 
 const handleSubmitForm = async () => {
   // Check if player 2 exists
-  const res = await getUserByUsername(playerForm.player2.name)
-  const { data } = res.data
-  if (data) {
-    // Complete the data
-    playerForm.player2.id = data.id
-    playerForm.player2.score = data.score
-    // Encrypt to prevent misuse
-    const player1 = encrypt(JSON.stringify(playerForm.player1))
-    const player2 = encrypt(JSON.stringify(playerForm.player2))
-    router.push({ path: '/game', query: { player1, player2 } })
-  } else {
-    await store.dispatch('showAlert', {
-      message: 'Player 2 Does Not Exist!',
-      header: 'Invalid Player 2'
-    })
+  try {
+    const res = await getUserByUsername(playerForm.player2.name)
+    const { data } = res.data
+    if (data != null) {
+      // Complete the data
+      console.log(data)
+      playerForm.player2.id = data.id
+      playerForm.player2.score = data.score
+      // Encrypt to prevent misuse
+      const player1 = encrypt(JSON.stringify(playerForm.player1))
+      const player2 = encrypt(JSON.stringify(playerForm.player2))
+      router.push({ path: '/game', query: { player1, player2 } })
+    } else {
+      await store.dispatch('showAlert', {
+        message: 'Player 2 Does Not Exist!',
+        header: 'Invalid Player 2'
+      })
+    }
+  } catch (error) {
+    console.error(error)
   }
 }
 </script>

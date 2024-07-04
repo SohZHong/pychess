@@ -12,7 +12,7 @@ router.post('/login', loginUser);
 router.post('/register', registerUser);
 // Route to retrieve  user details
 router.get('/getCurrentUser',checkTokenMiddleware, getLoggedInUser);
-router.post('/getUserByUsername', checkTokenMiddleware, retrieveUserByUsername)
+router.get('/getUserByUsername', checkTokenMiddleware, retrieveUserByUsername)
 // ----------- Match -----------------
 router.get('/getQuestions', checkTokenMiddleware, startMatch);
 router.get('/getMatchHistory', checkTokenMiddleware, getUserMatchHistory);

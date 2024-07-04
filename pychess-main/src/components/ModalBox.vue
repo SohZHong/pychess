@@ -2,6 +2,7 @@
   <dialog
     ref="dialog"
     @close="visible = false"
+    class="modal-dialog"
   >
     <div
     v-if="visible"
@@ -36,3 +37,25 @@ defineExpose({
   visible
 })
 </script>
+
+<style scoped>
+.modal-dialog {
+  width: 550px;
+  height: 550px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border: none;
+  border-radius: 10px;
+  outline: none;
+  box-shadow: var(--border-light-drop-shadow);
+}
+
+@media only screen and (max-width: 576px) {
+  .modal-dialog {
+    width: 350px;
+    height: 450px;
+  }
+}
+</style>

@@ -65,7 +65,7 @@ const handleCloseBox = async () => {
     border-radius: 10px;
     background-color: #ffffff;
     z-index: 999;
-    max-width: 500px;
+    width: 500px;
     padding: 1rem;
     box-shadow: var(--border-dark-drop-shadow);
     position: fixed;
@@ -92,6 +92,17 @@ const handleCloseBox = async () => {
 .alert-box .container .body {
     text-align: justify;
     margin: 1rem;
+}
+
+@media only screen and (max-width: 576px) {
+  .alert-box .container .header > h1, .alert-box .container .header > svg{
+    font-size: calc(var(--font-size) + 4px);
+  }
+
+  .alert-box .container {
+    width: 300px;
+    height: auto;
+  }
 }
 
 </style>

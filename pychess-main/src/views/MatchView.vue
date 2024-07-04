@@ -3,13 +3,16 @@
         <qr-code-scanner
           @update:qr="handleDetect"
         />
-        <form class="result-container">
-            <label>
-                <input type="radio" @input="handleSelectWinner" :name="player1?.name" :value="player1?.id" required/>
-            </label>
-            <label>
-                <input type="radio" @input="handleSelectWinner" :name="player2?.name" :value="player2?.id" v-model="matchForm.winner" required/>
-            </label>
+        <form @submit.prevent="handleSelectWinner" class="result-container">
+          <h3>Please Select Winner:</h3>
+          <label>
+              <input type="radio" v-model="matchForm.winner" :name="player1?.name" :value="player1?.id" required/>
+              {{ player1?.name }}
+          </label>
+          <label>
+              <input type="radio" v-model="matchForm.winner" :name="player2?.name" :value="player2?.id" required/>
+              {{ player2?.name }}
+          </label>
         </form>
     </modal-box>
     <button class="light-button" @click="handleSubmitAnswers">Submit Answers</button>
@@ -51,7 +54,7 @@ interface MatchForm {
 const store = useStore()
 const modal = ref<InstanceType<typeof ModalBox>>()
 const questions = ref<QuestionProps[]>([])
-const userAnswers = ref()
+const userAnswers = ref<Record<number, string>>({})
 const router = useRouter()
 const route = useRoute()
 const player1 = ref<PlayerProps>()
@@ -61,9 +64,10 @@ const matchForm = reactive<MatchForm>({
   loser: undefined
 })
 
-const handleDetect = async (decodedString: string) => {
+const handleDetect = async (detectedString: { map: (arg0: (code: any) => any) => string }) => {
   try {
-    const question = JSON.parse(decodedString)
+    // QR decoded as Array
+    const question: QuestionProps = JSON.parse(detectedString.map((code) => code.rawValue))
     questions.value.push(question)
   } catch (error) {
     console.error('Error Parsing QR Code', error)
@@ -71,8 +75,8 @@ const handleDetect = async (decodedString: string) => {
 }
 
 // Determine Winner and Loser
-const handleSelectWinner = (event: Event) => {
-  if ((event.target as HTMLInputElement).value as unknown as number === player1.value?.id) {
+const handleSelectWinner = async () => {
+  if (matchForm.winner === player1.value?.id) {
     matchForm.loser = player2.value?.id
   } else {
     matchForm.loser = player1.value?.id
@@ -85,26 +89,24 @@ const handleSubmitAnswers = async () => {
   questions.value.forEach(question => {
     const userAnswer = userAnswers.value[question.id]
     const correctAnswer = question.answers.find(ans => ans.is_correct === '1')
-    // Comparing answers
     if (userAnswer === correctAnswer?.answer) {
       score += question.score
     }
   })
-  // Save Score
+
   try {
     const match: MatchProps = { winner: matchForm.winner as number, loser: matchForm.loser as number }
     const player1Score: ScoreProps = {
       userId: player1.value?.id as number,
-      scoreAcquired: player1.value?.score as number
+      scoreAcquired: score
     }
     const player2Score: ScoreProps = {
       userId: player2.value?.id as number,
-      scoreAcquired: player2.value?.score as number
+      scoreAcquired: 0
     }
     await saveMatch(match)
     await saveMatchScore(player1Score, player2Score)
 
-    // Display score
     await store.dispatch('showAlert', {
       message: `Congratulations! Your Score is: ${score}`,
       header: 'Final Score',
@@ -113,7 +115,7 @@ const handleSubmitAnswers = async () => {
       }
     })
   } catch (error) {
-    console.error('Error saving match details')
+    console.error('Error saving match details:', error)
   }
 }
 

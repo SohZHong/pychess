@@ -29,7 +29,8 @@ export interface MatchProps {
 export interface PlayerProps {
   id: number | undefined,
   name: string,
-  score: number
+  score: number,
+  side: string
 }
 
 export function getQuestions (

@@ -1,4 +1,17 @@
 <template>
+    <modal-box ref="modal">
+      <h2>Invite {{ playerForm.player2.name }}!</h2>
+      <!-- Configure variable -->
+       <div class="qr-code">
+        <vue-qrcode
+        :value="'http://localhost:8000/' + gameRoute"
+        :options="{ width: 350 }"
+        type="image/png"
+        :color="{ dark: '#000000', light: '#ffffff'}"
+        ></vue-qrcode>
+       </div>
+      <button @click="handleStartMatch" class="start-button light-button">Start Match!</button>
+    </modal-box>
     <div class="greeting-container">
       <h1>Enter Opponent Details</h1>
     </div>
@@ -41,13 +54,15 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive } from 'vue'
+import { computed, reactive, ref } from 'vue'
+import VueQrcode from 'vue-qrcode'
 import { useStore } from 'vuex'
 import InputField from '@/components/InputField.vue'
-import { encrypt } from '@/utils/crypto'
+import { encrypt } from '@/utils/crypto' // Ensure the correct import path
 import router from '@/router'
 import { getUserByUsername } from '@/api/user'
 import { PlayerProps } from '@/api/match'
+import ModalBox from '@/components/ModalBox.vue'
 
 interface PlayerForm {
   player1: PlayerProps,
@@ -60,13 +75,24 @@ const playerForm = reactive<PlayerForm>({
   player1: {
     id: user.value.id,
     name: user.value.name,
-    score: user.value.score
+    score: user.value.score,
+    side: 'white'
   },
   player2: {
     id: undefined,
     name: '',
-    score: 0
+    score: 0,
+    side: 'black'
   }
+})
+const modal = ref<InstanceType<typeof ModalBox>>()
+const gameRoute = computed(() => {
+  if (playerForm.player2.id !== undefined) {
+    const player1Qr = encodeURIComponent(encrypt(JSON.stringify(playerForm.player1)))
+    const player2Qr = encodeURIComponent(encrypt(JSON.stringify(playerForm.player2)))
+    return `/game?player1=${player1Qr}&player2=${player2Qr}`
+  }
+  return ''
 })
 
 const handleCancel = () => {
@@ -82,10 +108,8 @@ const handleSubmitForm = async () => {
       // Complete the data
       playerForm.player2.id = data.id
       playerForm.player2.score = data.score
-      // Encrypt to prevent misuse
-      const player1 = encrypt(JSON.stringify(playerForm.player1))
-      const player2 = encrypt(JSON.stringify(playerForm.player2))
-      router.push({ path: '/game', query: { player1, player2 } })
+      // Show QR Code
+      modal.value?.show()
     } else {
       await store.dispatch('showAlert', {
         message: 'Player 2 Does Not Exist!',
@@ -96,9 +120,18 @@ const handleSubmitForm = async () => {
     console.error(error)
   }
 }
+
+const handleStartMatch = () => {
+  router.push({ path: 'game', query: { player1: encrypt(JSON.stringify(playerForm.player1)), player2: encrypt(JSON.stringify(playerForm.player2)) } })
+}
+
 </script>
 
 <style scoped>
+.start-button {
+  font-size: var(--font-size);
+}
+
 .greeting-container {
     margin: 2rem 0;
     font-size: calc(var(--font-size) + 6px);

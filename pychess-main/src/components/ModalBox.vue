@@ -48,6 +48,7 @@ defineExpose({
   border-radius: 10px;
   outline: none;
   box-shadow: var(--border-light-drop-shadow);
+  padding: 1rem;
 }
 
 @media only screen and (max-width: 576px) {

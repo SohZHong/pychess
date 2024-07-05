@@ -80,7 +80,7 @@
 import QrCodeScanner from '@/components/QrCodeScanner.vue'
 import ModalBox from '@/components/ModalBox.vue'
 import { MatchProps, PlayerProps, QuestionProps, saveMatch } from '@/api/match'
-import { onMounted, onUnmounted, reactive, ref } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
 import { decrypt } from '@/utils/crypto'
@@ -166,12 +166,22 @@ onMounted(async () => {
   modal.value?.show()
   const encryptedPlayer1 = route.query.player1 as string
   const encryptedPlayer2 = route.query.player2 as string
-
+  const id = computed(() => store.state.user.id)
   try {
-    const decryptedPlayer1 = JSON.parse(decrypt(encryptedPlayer1))
-    const decryptedPlayer2 = JSON.parse(decrypt(encryptedPlayer2))
-    player1.value = decryptedPlayer1
-    player2.value = decryptedPlayer2
+    const decryptedPlayer1: PlayerProps = JSON.parse(decrypt(encryptedPlayer1))
+    const decryptedPlayer2: PlayerProps = JSON.parse(decrypt(encryptedPlayer2))
+    if (id.value === decryptedPlayer1.id || id.value === decryptedPlayer2.id) {
+      player1.value = decryptedPlayer1
+      player2.value = decryptedPlayer2
+    } else {
+      await store.dispatch('showAlert', {
+        message: 'You are not part of this game!',
+        header: 'Invalid Session!',
+        onClose: () => {
+          router.back()
+        }
+      })
+    }
   } catch (error) {
     console.error('Error decrypting player data:', error)
   }

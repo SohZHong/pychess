@@ -5,6 +5,7 @@ const checkTokenMiddleware = require('../middleware/authToken');
 const { startMatch, getUserMatchHistory, saveMatchHistory } = require('../controllers/main/matchController');
 const { saveUserScore } = require('../controllers/main/scoreController');
 const { getApiKey } = require('../controllers/main/apiController');
+const { getLeaderboard } = require('../controllers/main/leaderboardController');
 const router = express.Router();
 // ----------- User -----------------
 // Route to login
@@ -20,7 +21,7 @@ router.get('/getMatchHistory', checkTokenMiddleware, getUserMatchHistory);
 router.post('/saveMatch', checkTokenMiddleware, saveMatchHistory);
 router.post('/saveMatchScore', checkTokenMiddleware, saveUserScore);
 // ----------- Leaderboard -----------
-
+router.get('/getLeaderboard', checkTokenMiddleware, getLeaderboard);
 // ----------- Settings --------------
 // Route to update user information
 router.put('/settings', checkTokenMiddleware, updateAppUser);

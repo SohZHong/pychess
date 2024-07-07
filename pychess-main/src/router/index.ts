@@ -74,6 +74,30 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/leaderboard',
+    component: LayoutView,
+    children: [
+      {
+        path: '',
+        name: 'leaderboard',
+        component: () => import('@/views/LeaderboardView.vue')
+      }
+    ],
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/setting',
+    component: LayoutView,
+    children: [
+      {
+        path: '',
+        name: 'setting',
+        component: () => import('@/views/SettingsView.vue')
+      }
+    ],
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/rules',
     component: LayoutView,
     children: [

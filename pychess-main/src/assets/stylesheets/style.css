@@ -51,6 +51,11 @@ hr.dotted {
     border-bottom: none;
 }
 
+.highlighted {
+    font-weight: bold;
+    color: var(--primary-brand-color);
+}
+
 .light-button {
     color: var(--primary-brand-color);
     border: none;

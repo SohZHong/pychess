@@ -9,7 +9,7 @@
                     <router-link to="/leaderboard">Leaderboard</router-link>
                 </li>
                 <li class="sidebar-item">
-                    <router-link to="/support">Support</router-link>
+                    <router-link to="/rules">Rules</router-link>
                 </li>
             </ul>
         </side-bar-view>
@@ -101,6 +101,12 @@ const handleLogout = async () => {
 
 .navbar .sidebar-items {
     margin: 0 auto;
+}
+
+.navbar .sidebar-items .sidebar-item {
+    font-size: var(--font-size);
+    padding: 1rem;
+    text-align: justify;
 }
 
 .navbar-wrapper {

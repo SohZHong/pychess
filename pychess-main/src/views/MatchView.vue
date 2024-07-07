@@ -161,7 +161,7 @@ const handleSubmitAnswers = async () => {
     await saveMatch(match)
     await saveMatchScore(playerScore)
     // Refresh user score
-    await store.dispatch('getUserData')
+    await store.dispatch('getUserData', true)
     await store.dispatch('showAlert', {
       message: `Congratulations! Your Score is: ${score}`,
       header: 'Final Score',

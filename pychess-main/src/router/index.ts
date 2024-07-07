@@ -72,6 +72,17 @@ const routes: Array<RouteRecordRaw> = [
       }
     ],
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/rules',
+    component: LayoutView,
+    children: [
+      {
+        path: '',
+        name: 'rules',
+        component: () => import('@/views/RuleView.vue')
+      }
+    ]
   }
 ]
 

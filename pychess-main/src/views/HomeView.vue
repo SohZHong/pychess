@@ -1,5 +1,6 @@
 <template>
-  <div class="greeting-container">
+  <div>
+    <div class="greeting-container">
     <h1>Welcome Back! {{ user.name }}</h1>
   </div>
   <div class="play-container">
@@ -18,12 +19,18 @@
       </router-link>
     </div>
   </div>
+  <hr class="dotted"/>
+  <div class="rules">
+    <rule-view />
+  </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import ChessBoardIcon from '@/components/ChessBoardIcon.vue'
+import RuleView from '@/views/RuleView.vue'
 const store = useStore()
 const user = computed(() => store.state.user)
 </script>
@@ -61,9 +68,22 @@ const user = computed(() => store.state.user)
   font-size: calc(var(--font-size) + 10px);
 }
 
+hr {
+  margin: 5rem;
+}
+
+.rules {
+  width: 95vw;
+  margin: 0 auto;
+}
+
 @media only screen and (max-width: 576px) {
   .greeting-container {
     font-size: calc(var(--font-size) + 2px);
+  }
+
+  hr {
+    margin: 1rem;
   }
 }
 </style>

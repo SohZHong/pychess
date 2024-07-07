@@ -37,18 +37,24 @@ const getQuestions = async () => {
     const questionsMap = new Map();
 
     questionDetails.forEach(result => {
+        // First assignment will be to white
+        let side = 'white';
         // Check if result.rows is defined and is an array
         if (result && result.rows && Array.isArray(result.rows)) {
             result.rows.forEach(row => {
                 const { id, text, score, name, question_type_id, answer, is_correct } = row;
                 // Separate each question by id
                 if (!questionsMap.has(id)){
+                    // Alternate sides
+                    side = side === 'white' ? 'black' : 'white';
+                    console.log(side);
                     questionsMap.set(id, {
                         id,
                         text,
                         score,
                         name,
                         question_type_id,
+                        side,
                         answers: []
                     });
                 }
@@ -60,7 +66,6 @@ const getQuestions = async () => {
             });
         }
     });
-
     return Array.from(questionsMap.values());
 }
 

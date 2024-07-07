@@ -7,15 +7,13 @@ export interface ScoreProps {
 }
 
 export function saveMatchScore (
-  player1: ScoreProps,
-  player2: ScoreProps
+  player: ScoreProps
 ) {
   return request({
     url: '/api/saveMatchScore',
     method: 'post',
     data: {
-      player1,
-      player2
+      player
     }
   })
 }

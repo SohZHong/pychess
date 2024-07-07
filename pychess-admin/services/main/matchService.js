@@ -4,9 +4,15 @@ const insertMatchHistory = async (winner, loser) => {
     const sql = `
     INSERT INTO match_history
     (winner_id, loser_id)
-    VALUES (?, ?)
+    SELECT ?, ?
+    FROM DUAL
+    WHERE NOT EXISTS (
+        SELECT * FROM match_history mh
+        WHERE mh.winner_id = ? OR mh.loser_id = ?
+    )
     `
-    const res = await dbQuery(sql, [winner, loser])
+    const params = [winner, loser, winner, loser]
+    const res = dbQuery(sql, params)
     return res.rows
 }
 

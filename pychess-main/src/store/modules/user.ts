@@ -31,14 +31,13 @@ const user: Module<UserModuleState, State> = {
   },
   actions: {
     // Retrieve user information
-    async getUserData ({ commit }: ActionContext<UserModuleState, State>): Promise<void> {
+    async getUserData ({ commit }: ActionContext<UserModuleState, State>, refresh: boolean): Promise<void> {
       let storageId = localStorage.getItem('userId')
       let storageName = localStorage.getItem('userName')
       let storageScore = localStorage.getItem('userScore')
 
-      if (!storageId || !storageName || !storageScore) {
+      if (!storageId || !storageName || !storageScore || refresh) {
         const response = await getCurrentUser()
-        console.log(response)
         const { code, message, data } = response.data
         if (code === 200) {
           storageId = data.id

@@ -2,8 +2,8 @@ import request from '@/utils/request'
 
 export interface GameProps {
   id: number | undefined,
-  player1: string,
-  player2: string,
+  winner: string,
+  loser: string,
   endTime: Date | undefined
 }
 
@@ -12,6 +12,7 @@ export function saveGame (
 ) {
   return request({
     url: '/api/saveMatch',
-    method: 'post'
+    method: 'post',
+    data
   })
 }

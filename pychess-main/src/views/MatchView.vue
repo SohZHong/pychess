@@ -7,7 +7,7 @@
           <h3>Please Select Winner:</h3>
           <div class="result-selector">
             <label>
-              <input type="radio" v-model="matchForm.winner" :name="player1?.name" :value="player1?.id" checked/>
+              <input type="radio" v-model="matchForm.winner" :name="player1?.name" :value="player1?.id"/>
               {{ player1?.name }}
             </label>
             <label>
@@ -99,17 +99,25 @@ const router = useRouter()
 const route = useRoute()
 const player1 = ref<PlayerProps>()
 const player2 = ref<PlayerProps>()
+const playerSide = ref<string>()
 const matchForm = reactive<MatchForm>({
   winner: undefined,
   loser: undefined
 })
+const id = computed(() => store.state.user.id)
 
 const handleDetect = async (detectedString: { map: (arg0: (code: any) => any) => string }) => {
   try {
     // QR decoded as Array
     const question: QuestionProps = JSON.parse(detectedString.map((code) => code.rawValue))
-    console.log(question)
-    questions.value.push(question)
+    if (question.side === playerSide.value) {
+      questions.value.push(question)
+    } else {
+      await store.dispatch('showAlert', {
+        header: 'Invalid QR',
+        message: 'Please scan the correct QR code!'
+      })
+    }
   } catch (error) {
     console.error('Error Parsing QR Code', error)
   }
@@ -117,12 +125,18 @@ const handleDetect = async (detectedString: { map: (arg0: (code: any) => any) =>
 
 // Determine Winner and Loser
 const handleSelectWinner = async () => {
-  if (matchForm.winner === player1.value?.id) {
-    matchForm.loser = player2.value?.id
+  if (matchForm.winner === undefined) {
+    await store.dispatch('showAlert', {
+      message: 'Please select a winner!'
+    })
   } else {
-    matchForm.loser = player1.value?.id
+    if (matchForm.winner === player1.value?.id) {
+      matchForm.loser = player2.value?.id
+    } else {
+      matchForm.loser = player1.value?.id
+    }
+    modal.value?.close()
   }
-  modal.value?.close()
 }
 
 const handleSubmitAnswers = async () => {
@@ -135,20 +149,19 @@ const handleSubmitAnswers = async () => {
       score += question.score
     }
   })
-
   try {
-    const match: MatchProps = { winner: matchForm.winner as number, loser: matchForm.loser as number }
-    const player1Score: ScoreProps = {
-      userId: player1.value?.id as number,
+    const match: MatchProps = {
+      winner: matchForm.winner as number,
+      loser: matchForm.loser as number
+    }
+    const playerScore: ScoreProps = {
+      userId: id.value,
       scoreAcquired: score
     }
-    const player2Score: ScoreProps = {
-      userId: player2.value?.id as number,
-      scoreAcquired: 0
-    }
     await saveMatch(match)
-    await saveMatchScore(player1Score, player2Score)
-
+    await saveMatchScore(playerScore)
+    // Refresh user score
+    await store.dispatch('getUserData')
     await store.dispatch('showAlert', {
       message: `Congratulations! Your Score is: ${score}`,
       header: 'Final Score',
@@ -166,13 +179,13 @@ onMounted(async () => {
   modal.value?.show()
   const encryptedPlayer1 = route.query.player1 as string
   const encryptedPlayer2 = route.query.player2 as string
-  const id = computed(() => store.state.user.id)
   try {
     const decryptedPlayer1: PlayerProps = JSON.parse(decrypt(encryptedPlayer1))
     const decryptedPlayer2: PlayerProps = JSON.parse(decrypt(encryptedPlayer2))
     if (id.value === decryptedPlayer1.id || id.value === decryptedPlayer2.id) {
       player1.value = decryptedPlayer1
       player2.value = decryptedPlayer2
+      playerSide.value = id.value === decryptedPlayer1.id ? decryptedPlayer1.side : decryptedPlayer2.side
     } else {
       await store.dispatch('showAlert', {
         message: 'You are not part of this game!',
@@ -217,6 +230,12 @@ onUnmounted(async () => {
   font-size: var(--font-size);
 }
 
+.light-button {
+  font-size: var(--font-size);
+  width: 200px;
+  margin: 1rem;
+}
+
 .question-section {
   padding: 1rem;
 }
@@ -225,7 +244,6 @@ onUnmounted(async () => {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  align-items: center;
   justify-content: baseline;
   gap: 1rem;
 }

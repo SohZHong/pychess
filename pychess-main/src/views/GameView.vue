@@ -1,29 +1,29 @@
 <template>
-    <div class="button-container">
-        <button class="light-button" @click.prevent="handleDownloadQR">Print QR</button>
-        <button class="light-button" @click="handleStartMatch">Start Match</button>
-        <button class="light-button" @click="handleCancelMatch">Cancel Match</button>
-    </div>
-    <div class="chess-section" ref="chessSection">
-        <div class="chess-container">
-            <h1 class="color">White: {{ player1?.name }}</h1>
-            <div class="qr-container">
-                <div class="qr" v-for="question in whiteQuestions" :key="question.id">
-                    <img :src="question.code" alt="Question QR Code"/>
-                    <span>{{ question.name }}</span>
-                </div>
-            </div>
+  <div class="button-container">
+    <button class="light-button" @click.prevent="handleDownloadQR">Print QR</button>
+    <button class="light-button" @click="handleStartMatch">Start Match</button>
+    <button class="light-button" @click="handleCancelMatch">Cancel Match</button>
+  </div>
+  <div class="chess-section" ref="chessSection">
+    <div class="chess-container">
+      <h1 class="color">White: {{ player1?.name }}</h1>
+      <div class="qr-container">
+        <div class="qr" v-for="question in whiteQRCodes" :key="question.id">
+          <img :src="question.code" alt="Question QR Code" />
+          <span>{{ question.name }}</span>
         </div>
-        <div class="chess-container">
-            <h1 class="color">Black: {{ player2?.name }}</h1>
-            <div class="qr-container">
-                <div class="qr" v-for="question in blackQuestions" :key="question.id">
-                    <img :src="question.code" alt="Question QR Code"/>
-                    <span>{{ question.name }}</span>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+    <div class="chess-container">
+      <h1 class="color">Black: {{ player2?.name }}</h1>
+      <div class="qr-container">
+        <div class="qr" v-for="question in blackQRCodes" :key="question.id">
+          <img :src="question.code" alt="Question QR Code" />
+          <span>{{ question.name }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -33,21 +33,16 @@ import { downloadScreenshot } from '@/utils/screenshot'
 import { useRoute, useRouter } from 'vue-router'
 import { decrypt } from '@/utils/crypto'
 
-const questions = ref<QuestionQrProps[]>([])
+const questions = ref<QuestionQrProps>()
 const player1 = ref<PlayerProps>()
 const player2 = ref<PlayerProps>()
 const route = useRoute()
 const router = useRouter()
 // Reference to the chess section
 const chessSection = ref<HTMLDivElement | null>(null)
-// Divide questions to black and white
-const whiteQuestions = computed(() => {
-  return questions.value.slice(0, Math.ceil(questions.value.length / 2))
-})
 
-const blackQuestions = computed(() => {
-  return questions.value.slice(Math.ceil(questions.value.length / 2))
-})
+const whiteQRCodes = computed(() => questions.value?.whiteQRCodes || [])
+const blackQRCodes = computed(() => questions.value?.blackQRCodes || [])
 
 // Download QR Code
 const handleDownloadQR = async () => {
@@ -74,9 +69,8 @@ onMounted(async () => {
     } else {
       const res = await getQuestions()
       const { data } = res.data
-      if (Array.isArray(data)) {
+      if (data && data.blackQRCodes && data.whiteQRCodes) {
         questions.value = data
-        console.log(data)
         // set session storage to prevent additional database retrieval
         sessionStorage.setItem('questions', JSON.stringify(data))
       } else {

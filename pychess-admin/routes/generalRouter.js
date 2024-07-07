@@ -4,6 +4,7 @@ const { registerUser, loginUser, getLoggedInUser } = require('../controllers/mai
 const checkTokenMiddleware = require('../middleware/authToken');
 const { startMatch, getUserMatchHistory, saveMatchHistory } = require('../controllers/main/matchController');
 const { saveUserScore } = require('../controllers/main/scoreController');
+const { getApiKey } = require('../controllers/main/apiController');
 const router = express.Router();
 // ----------- User -----------------
 // Route to login
@@ -23,5 +24,7 @@ router.post('/saveMatchScore', checkTokenMiddleware, saveUserScore);
 // ----------- Settings --------------
 // Route to update user information
 router.put('/settings', checkTokenMiddleware, updateAppUser);
+// ----------- API --------------
+router.get('/fetchApi', checkTokenMiddleware, getApiKey);
 
 module.exports = router;

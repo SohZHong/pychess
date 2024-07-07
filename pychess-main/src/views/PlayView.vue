@@ -54,11 +54,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, onUnmounted, reactive, ref } from 'vue'
 import VueQrcode from 'vue-qrcode'
 import { useStore } from 'vuex'
 import InputField from '@/components/InputField.vue'
-import { encrypt } from '@/utils/crypto' // Ensure the correct import path
+import { encrypt } from '@/utils/crypto'
 import router from '@/router'
 import { getUserByUsername } from '@/api/user'
 import { PlayerProps } from '@/api/match'
@@ -122,8 +122,20 @@ const handleSubmitForm = async () => {
 }
 
 const handleStartMatch = () => {
-  router.push({ path: 'game', query: { player1: encrypt(JSON.stringify(playerForm.player1)), player2: encrypt(JSON.stringify(playerForm.player2)) } })
+  const p1 = playerForm.player1
+  const p2 = playerForm.player2
+  router.push({
+    path: 'game',
+    query: {
+      player1: encrypt(JSON.stringify(p1)),
+      player2: encrypt(JSON.stringify(p2))
+    }
+  })
 }
+
+onUnmounted(() => {
+  modal.value?.close()
+})
 
 </script>
 

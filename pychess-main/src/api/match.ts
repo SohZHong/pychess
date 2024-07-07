@@ -11,13 +11,19 @@ export interface QuestionProps {
   question_type_id: number,
   score: number,
   name: string,
+  side: string
   answers: Array<AnswerProps>
 }
 
-export interface QuestionQrProps {
+export interface QrProps {
   id: number,
   name: string,
   code: string
+}
+
+export interface QuestionQrProps {
+  whiteQRCodes: Array<QrProps>,
+  blackQRCodes: Array<QrProps>
 }
 
 export interface MatchProps {

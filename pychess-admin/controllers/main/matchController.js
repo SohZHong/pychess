@@ -7,22 +7,36 @@ const startMatch = async (req, res) => {
     const response = new ResponseHelper(res);
     try {
         const questions = await getQuestions();
-        const qrCodes = await Promise.all(
-            questions.map(async (question) => {
-            const qrCode = await generateQRCode(question);
-            return {
-                id: question.id,
-                name: question.name,
-                code: qrCode
-            }
-        })
-        )
-        response.success('Questions Retrieved Successfully', qrCodes);
+        const blackQuestions = questions.filter(q => q.side === 'black');
+        const whiteQuestions = questions.filter(q => q.side === 'white');
+        // Generate Black QR
+        const blackQRCodes = await Promise.all(
+            blackQuestions.map(async (question) => {
+                const qrCode = await generateQRCode(question);
+                return {
+                    id: question.id,
+                    name: question.name,
+                    code: qrCode
+                };
+            })
+        );
+        // Generate White QR
+        const whiteQRCodes = await Promise.all(
+            whiteQuestions.map(async (question) => {
+                const qrCode = await generateQRCode(question);
+                return {
+                    id: question.id,
+                    name: question.name,
+                    code: qrCode
+                };
+            })
+        );
+        response.success('Questions Retrieved Successfully', { blackQRCodes, whiteQRCodes });
     } catch (error) {
         console.error(error);
         response.error('Error retrieving questions');
     }
-}
+};
 
 // Get Match History
 const getUserMatchHistory = async (req, res) => {

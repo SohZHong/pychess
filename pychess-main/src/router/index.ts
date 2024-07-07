@@ -86,12 +86,12 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/setting',
+    path: '/settings',
     component: LayoutView,
     children: [
       {
         path: '',
-        name: 'setting',
+        name: 'settings',
         component: () => import('@/views/SettingsView.vue')
       }
     ],

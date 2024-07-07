@@ -5,37 +5,42 @@
             <div class="input-container">
                 <label for="username">Username</label>
                 <input-field
-                    type="text"
-                    name="username"
-                    placeholder="Please enter username"
-                    v-model="registerForm.username"
-                    icon="user"
-                    required
+                type="text"
+                name="username"
+                placeholder="Please enter username"
+                v-model="registerForm.username"
+                icon="user"
+                required
+                :disabled="false"
                 />
+                <p v-if="usernameError" class="error">{{ usernameError }}</p>
             </div>
             <div class="input-container">
                 <label for="password">Password</label>
-                <InputField
-                    type="password"
-                    name="password"
-                    placeholder="Please enter password"
-                    v-model="registerForm.password"
-                    icon="lock"
-                    required
+                <input-field
+                type="password"
+                name="password"
+                placeholder="Please enter password"
+                v-model="registerForm.password"
+                icon="lock"
+                :disabled="false"
+                required
                 />
+                <p v-if="passwordError" class="error">{{ passwordError }}</p>
             </div>
             <div class="input-container">
                 <label for="email">Email</label>
-                <InputField
+                <input-field
                     type="email"
                     name="email"
                     placeholder="Please enter email"
                     v-model="registerForm.email"
                     icon="envelope"
+                    :disabled="false"
                     required
                 />
             </div>
-            <button class="register-button" type="submit">Sign Up</button>
+            <button class="register-button" type="submit" :disabled="formInvalid">Sign Up</button>
         </form>
         <div class="register-redirect">
             <p>Already have an account?</p>
@@ -46,9 +51,10 @@
 
 <script lang="ts" setup>
 import { register } from '@/api/auth'
-import { reactive } from 'vue'
+import { computed, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import InputField from '@/components/InputField.vue'
+import { validatePassword, validateUsername } from '@/utils/auth'
 
 interface RegisterForm {
   username: string,
@@ -63,13 +69,21 @@ const registerForm = reactive<RegisterForm>({
   email: ''
 })
 
+const usernameError = computed(() => validateUsername(registerForm.username))
+const passwordError = computed(() => validatePassword(registerForm.password))
+
+const formInvalid = computed(() => {
+  return !!usernameError.value || !!passwordError.value
+})
+
 const handleSubmitForm = async () => {
+  if (formInvalid.value) return
   const username = registerForm.username
   const password = registerForm.password
   const email = registerForm.email
   await register({ username, password, email })
     .then(() => {
-    // Navigate user to login page
+      // Navigate user to login page
       router.push('/login')
     }).catch(err => {
       console.error(err)
@@ -126,6 +140,11 @@ const handleSubmitForm = async () => {
     filter: brightness(1.3);
 }
 
+.register-form .register-button:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+
 .register-redirect {
     margin-top: 4rem;
     padding: 1rem;
@@ -137,6 +156,11 @@ const handleSubmitForm = async () => {
 
 .register-redirect > a {
     font-size: var(--font-size);
+}
+
+.input-container .error {
+  color: var(--red);
+  font-size: 0.9em;
 }
 
 @media only screen and (max-width: 576px) {

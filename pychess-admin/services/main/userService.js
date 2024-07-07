@@ -28,24 +28,36 @@ const register = async (username, password, email) => {
 }
 
 const updateUser = async (user) => {
+    const fieldsToUpdate = [];
+    const params = [];
+
+    fieldsToUpdate.push('name = ?');
+    params.push(user.name);
+
+    // Add password only if its specified
+    if (user.password) {
+        const encryptedPassword = await encryptPassword(user.password);
+        fieldsToUpdate.push('password = ?');
+        params.push(encryptedPassword);
+    }
+
+    fieldsToUpdate.push('email = ?');
+    params.push(user.email);
+
+    fieldsToUpdate.push('update_by = ?');
+    params.push(user.updateBy);
+
+    fieldsToUpdate.push('update_time = ?');
+    params.push(new Date(user.updateTime));
+
+    params.push(user.id); // The id parameter for the WHERE clause
+
     const sql = `
     UPDATE user
-    SET
-    name = ?,
-    password = ?,
-    email = ?,
-    update_by = ?,
-    update_time = ?
+    SET ${fieldsToUpdate.join(', ')}
     WHERE id = ?;
     `;
-    const params = [
-        user.name,
-        user.password,
-        user.email,
-        user.updateBy,
-        new Date(user.updateTime),
-        user.id
-    ];
+
     const res = await dbQuery(sql, params);
     return res.rows;
 }   

@@ -28,7 +28,8 @@
 a, a:visited, a:hover, a:focus, a:hover, a:active {
     text-decoration: none;
     color: var(--primary-brand-color);
-    font-weight: bold;
+    font-weight: 600;
+    cursor: pointer;
 }
 
 ul, li {

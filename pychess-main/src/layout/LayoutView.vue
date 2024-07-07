@@ -6,10 +6,19 @@
                     <router-link to="/dashboard">Home</router-link>
                 </li>
                 <li class="sidebar-item">
+                    <router-link to="/play">Play Now</router-link>
+                </li>
+                <li class="sidebar-item">
                     <router-link to="/leaderboard">Leaderboard</router-link>
                 </li>
                 <li class="sidebar-item">
                     <router-link to="/rules">Rules</router-link>
+                </li>
+                <li class="sidebar-item">
+                    <router-link to="/settings">Settings</router-link>
+                </li>
+                <li class="sidebar-item">
+                    <a @click="handleLogout">Logout</a>
                 </li>
             </ul>
         </side-bar-view>
@@ -32,7 +41,7 @@
                     <div class="profile-dropdown">
                         <div @click="toggleDropdown" class="light-button dropdown-toggle">{{ username }}</div>
                         <div class="dropdown-menu" :class="{ none: !isDropdownOpen }">
-                            <router-link to="settings">Settings</router-link>
+                            <router-link to="/settings">Settings</router-link>
                             <a @click.prevent="handleLogout">Logout</a>
                         </div>
                     </div>
@@ -86,7 +95,6 @@ const handleLogout = async () => {
 </script>
 
 <style scoped>
-/* Cover the whole page */
 .app-wrapper {
     position: relative;
     height: 100%;

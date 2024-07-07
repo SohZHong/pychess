@@ -49,6 +49,7 @@ const handleCloseBox = async () => {
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 1000;
 }
 
 .alert-box .backdrop {
@@ -59,12 +60,13 @@ const handleCloseBox = async () => {
     top: 0;
     left: 0;
     cursor: pointer;
+    z-index: 1000;
 }
 
 .alert-box .container {
     border-radius: 10px;
     background-color: #ffffff;
-    z-index: 999;
+    z-index: 1000;
     width: 500px;
     padding: 1rem;
     box-shadow: var(--border-dark-drop-shadow);

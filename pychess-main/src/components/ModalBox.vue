@@ -1,58 +1,65 @@
 <template>
-  <dialog
-    ref="dialog"
-    @close="visible = false"
-    class="modal"
-  >
-    <div
-    v-if="visible"
-    :class="props.class"
-    >
-      <slot></slot>
+  <div class="modal">
+        <div class="backdrop" v-if="visible">
+        </div>
+        <div class="modal-container" v-if="visible">
+          <slot></slot>
+        </div>
     </div>
-  </dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineExpose } from 'vue'
-
-const dialog = ref<HTMLDialogElement>()
-const props = defineProps({
-  class: {
-    type: String,
-    default: ''
-  }
-})
+import { ref, defineExpose } from 'vue'
 
 const visible = ref(false)
 
 const showModal = () => {
-  dialog.value?.showModal()
   visible.value = true
 }
+
+const closeModal = () => {
+  visible.value = false
+}
+
 // Expose values for easier usage
 defineExpose({
   show: showModal,
-  close: (returnVal?: string): void => dialog.value?.close(returnVal),
-  visible
+  close: closeModal
 })
 </script>
 
 <style scoped>
 .modal {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.modal .backdrop {
+    background-color: rgba(0,0,0,.20);
+    width: 100vw; /* Cover whole screen */
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+}
+
+.modal .modal-container {
   border-radius: 10px;
-  outline: none;
-  box-shadow: var(--border-light-drop-shadow);
+  background-color: #ffffff;
+  z-index: 999;
   padding: 1rem;
+  box-shadow: var(--border-dark-drop-shadow);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 @media only screen and (max-width: 576px) {
-  .modal {
+  .modal-container {
     width: 350px;
     height: fit-content;
   }

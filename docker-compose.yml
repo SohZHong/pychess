@@ -15,13 +15,14 @@ services:
       - "3000:3000"
     depends_on:
       - sqlserver
-  # adminui:
-  #   build:
-  #     context: ./pychess-admin-ui
-  #   ports:
-  #     - "8080:8080"
-  #   depends_on:
-  #     - sqlserver
+  adminui:
+    build:
+      context: ./pychess-admin-ui
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - sqlserver
 
 volumes:
   sqlserver-data:

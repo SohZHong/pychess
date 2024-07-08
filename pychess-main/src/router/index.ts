@@ -12,7 +12,7 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: '',
-        name: 'dashboard',
+        name: 'home',
         component: () => import('@/views/HomeGuestView.vue')
       }
     ]
@@ -106,7 +106,8 @@ const routes: Array<RouteRecordRaw> = [
         name: 'rules',
         component: () => import('@/views/RuleView.vue')
       }
-    ]
+    ],
+    meta: { requiresAuth: true }
   }
 ]
 

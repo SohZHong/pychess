@@ -1,9 +1,9 @@
 <template>
   <!-- Render view only if there's a link -->
-  <router-view v-slot="{ Component, route }">
+  <router-view v-slot="{ Component }">
     <transition name="fade">
       <keep-alive>
-        <component :is="Component" v-if="!route.meta.link" :key="key" />
+        <component :is="Component" :key="key" />
       </keep-alive>
     </transition>
   </router-view>

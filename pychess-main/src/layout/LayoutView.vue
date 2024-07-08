@@ -50,13 +50,11 @@
         </div>
     </header>
     <main>
-        <alert-box />
         <app-main />
     </main>
 </template>
 
 <script lang="ts" setup>
-import AlertBox from '@/components/AlertBox.vue'
 import { computed, ref } from 'vue'
 import AppMain from './components/AppMain.vue'
 import HamburgerView from './components/menu/HamburgerView.vue'

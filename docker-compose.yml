@@ -23,6 +23,14 @@ services:
       - "8080:8080"
     depends_on:
       - sqlserver
+  main:
+    build:
+      context: ./pychess-main
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - sqlserver
 
 volumes:
   sqlserver-data:

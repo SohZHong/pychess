@@ -32,8 +32,8 @@ COPY start.sh /start.sh
 # Make the entry point script executable
 RUN chmod +x /start.sh
 
-# Expose port 8080
-EXPOSE 8080
+# Expose port 80
+EXPOSE 80
 
 # Set the entry point to the shell script
 ENTRYPOINT ["/start.sh"]

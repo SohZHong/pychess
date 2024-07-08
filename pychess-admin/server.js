@@ -9,8 +9,9 @@ const gameRouter = require('./routes/generalRouter');
 const { logout } = require('./controllers/main/authController');
 const app = express();
 const port = process.env.PORT || 3000;
-const adminOrigin = `${process.env.DOMAIN}:${process.env.ADMIN_DOMAIN_PORT}`;
-const mainOrigin = `${process.env.DOMAIN}:${process.env.MAIN_DOMAIN_PORT}`;
+const origin = process.env.DOMAIN
+const adminOrigin = `${origin}:${process.env.ADMIN_DOMAIN_PORT}`;
+const mainOrigin = `${origin}:${process.env.MAIN_DOMAIN_PORT}`;
 
 // Debugging: Log environment variables
 console.log('Server environment variables:', {
@@ -46,7 +47,7 @@ app.use(session({
 
 // Middleware: CORS Configuration
 app.use(cors({
-    origin: [adminOrigin, mainOrigin], // Allow requests from these origin
+    origin: [adminOrigin, mainOrigin, origin], // Allow requests from these origin
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Allow these HTTP methods
     credentials: true, // Allow cookies
     allowedHeaders: ['Content-Type', 'Authorization', 'set-cookie'], // Allow these headers

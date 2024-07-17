@@ -1,16 +1,16 @@
 import request from '@/utils/request'
 
 export interface UserProps {
-  id: number | null,
+  id?: number | null,
   name: string,
-  password: string,
+  password?: string,
   email: string,
-  status: string | null,
-  delFlag: string | null,
-  createBy: string | null,
-  createTime: Date | null,
-  updateBy: string,
-  updateTime: Date | null
+  status?: string | null,
+  delFlag?: string | null,
+  createBy?: string | null,
+  createTime?: Date | null,
+  updateBy?: string,
+  updateTime?: Date | null
 }
 
 // Retrieve current user data
@@ -72,6 +72,14 @@ export function deleteUser (userId: number | number[]) {
   return request({
     url,
     method: 'delete',
+    data
+  })
+}
+// Update user settings
+export function updateUserSettings (data: UserProps) {
+  return request({
+    url: '/api/system/settings',
+    method: 'put',
     data
   })
 }

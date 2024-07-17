@@ -1,4 +1,4 @@
-const { listAllUser, checkUsernameUnique, insertUser, updateUser, delUser, fullDeleteUser } = require('../../services/system/sysUserService');
+const { listAllUser, checkUsernameUnique, insertUser, updateUser, delUser, fullDeleteUser, updateUserSettings } = require('../../services/system/sysUserService');
 const ResponseHelper = require('../../models/ResponseHelper');
 
 // List All System Users
@@ -77,4 +77,17 @@ const fullDeleteSysUsers = async(req, res) => {
     }
 }
 
-module.exports = { getAllSysUsers, addSysUser, updateSysUser, deleteSysUsers, fullDeleteSysUsers }
+// Update user settings
+const updateSysUserSettings = async( req, res ) => {
+    const response = new ResponseHelper(res);
+    try {
+        const user = req.body;
+        await updateUserSettings(user);
+        response.success('User Updated Successfully');
+    } catch (error) {
+        console.error(error);
+        response.error('Error updating system user');
+    }
+}
+
+module.exports = { getAllSysUsers, addSysUser, updateSysUser, deleteSysUsers, fullDeleteSysUsers, updateSysUserSettings }

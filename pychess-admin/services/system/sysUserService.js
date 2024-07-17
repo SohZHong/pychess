@@ -64,7 +64,7 @@ const updateUser = async (user) => {
     ];
     const res = await dbQuery(sql, params);
     return res.rows;
-}   
+}
 
 const delUser = async (userIds) => {
     let sql;
@@ -100,4 +100,39 @@ const fullDeleteUser = async (userIds) => {
     return res.rows;
 }
 
-module.exports = { listAllUser, getSysUserByUsername, checkUsernameUnique, insertUser, updateUser, delUser, fullDeleteUser }
+const updateUserSettings = async (user) => {
+    const fieldsToUpdate = [];
+    const params = [];
+
+    fieldsToUpdate.push('name = ?');
+    params.push(user.name);
+
+    // Add password only if its specified
+    if (user.password) {
+        const encryptedPassword = await encryptPassword(user.password);
+        fieldsToUpdate.push('password = ?');
+        params.push(encryptedPassword);
+    }
+
+    fieldsToUpdate.push('email = ?');
+    params.push(user.email);
+
+    fieldsToUpdate.push('update_by = ?');
+    params.push(user.updateBy);
+
+    fieldsToUpdate.push('update_time = ?');
+    params.push(new Date(user.updateTime));
+
+    params.push(user.id); // The id parameter for the WHERE clause
+
+    const sql = `
+    UPDATE sys_user
+    SET ${fieldsToUpdate.join(', ')}
+    WHERE id = ?;
+    `;
+
+    const res = await dbQuery(sql, params);
+    return res.rows;
+}   
+
+module.exports = { listAllUser, getSysUserByUsername, checkUsernameUnique, insertUser, updateUser, delUser, fullDeleteUser, updateUserSettings }

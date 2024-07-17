@@ -2,3 +2,9 @@
     --header-height: 55px;
     --primary-brand-font-color: #6855fe;
 }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}

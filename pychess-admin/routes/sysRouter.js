@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAllSysUsers, addSysUser, updateSysUser, deleteSysUsers, fullDeleteSysUsers } = require('../controllers/system/sysUserController');
+const { getAllSysUsers, addSysUser, updateSysUser, deleteSysUsers, fullDeleteSysUsers, updateSysUserSettings } = require('../controllers/system/sysUserController');
 const { getAllQuestionWithAnswers, getAllQuestionType, addQuestion, modifyQuestion, fullDeleteQuestion } = require('../controllers/system/questionController');
 const { getAllChessPieces, addChessPiece, modifyChessPiece, fullDeleteChessPiece } = require('../controllers/system/chessController');
 const { loginSysUser, getLoggedInUser } = require('../controllers/main/authController');
@@ -25,7 +25,8 @@ router.patch('/users', checkTokenMiddleware, deleteSysUsers); // Batch update
 // Route to fully delete user(s)
 router.delete('/users/:id', checkTokenMiddleware, fullDeleteSysUsers); // Single delete
 router.delete('/users', checkTokenMiddleware, fullDeleteSysUsers); // Batch delete
-
+// ----------- Settings -----------
+router.put('/settings', checkTokenMiddleware, updateSysUserSettings)
 // ----------- Questions and Chess Piece -----------
 // Route to list all questions and chess piece
 router.get('/questions', checkTokenMiddleware, getAllQuestionWithAnswers);

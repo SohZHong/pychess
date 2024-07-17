@@ -66,15 +66,11 @@ const items = ref([
   {
     icon: Setting,
     title: 'Personal',
-    path: '/setting',
+    path: '/settings',
     children: [
       {
         path: '',
         text: 'Settings'
-      },
-      {
-        path: '/profile',
-        text: 'Profile'
       }
     ]
   }

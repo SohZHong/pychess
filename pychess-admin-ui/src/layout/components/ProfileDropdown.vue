@@ -5,7 +5,6 @@
         </span>
         <template #dropdown>
             <el-dropdown-menu>
-                <el-dropdown-item command="profile">Profile</el-dropdown-item>
                 <el-dropdown-item command="logout">Logout</el-dropdown-item>
             </el-dropdown-menu>
             </template>
@@ -31,15 +30,10 @@ export default defineComponent({
         console.error(err)
       })
     }
-    const handleProfileClick = () => {
-      router.push('/profile')
-    }
     // Handle dropdown click
     const handleCommand = (command: string) => {
       if (command === 'logout') {
         handleLogout()
-      } else if (command === 'profile') {
-        handleProfileClick()
       }
     }
     return {

@@ -7,7 +7,8 @@
         label-position="left"
         @submit.prevent="handleSubmitForm(ruleFormRef)"
         label-width="auto"
-        status-icon>
+        status-icon
+        >
             <el-form-item label="Username" prop="username">
                 <el-input
                     v-model="loginForm.username"
@@ -100,3 +101,30 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: auto;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5),
+  rgba(0, 0, 0, 0.5)), url('@/assets/chess_background.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.login > form {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 10px;
+  width: 500px;
+  height: 500px;
+  background: white;
+}
+
+</style>

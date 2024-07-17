@@ -46,7 +46,17 @@ const items = ref([
   {
     icon: User,
     title: 'User',
-    path: '/user'
+    path: '',
+    children: [
+      {
+        path: '',
+        text: 'System'
+      },
+      {
+        path: '/user',
+        text: 'Game'
+      }
+    ]
   },
   {
     icon: ChatLineSquare,
@@ -65,14 +75,8 @@ const items = ref([
   },
   {
     icon: Setting,
-    title: 'Personal',
-    path: '/settings',
-    children: [
-      {
-        path: '',
-        text: 'Settings'
-      }
-    ]
+    title: 'Settings',
+    path: '/settings'
   }
 ])
 </script>

@@ -14,8 +14,13 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: '',
-        name: 'home',
-        component: () => import('@/views/HomeView.vue')
+        name: 'sysUser',
+        component: () => import('@/views/SysUserView.vue')
+      },
+      {
+        path: 'user',
+        name: 'mainUser',
+        component: () => import('@/views/UserView.vue')
       }
     ],
     meta: { requiresAuth: true }
@@ -33,18 +38,6 @@ const routes: Array<RouteRecordRaw> = [
         path: 'chess',
         name: 'chess',
         component: () => import('@/views/ChessView.vue')
-      }
-    ],
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/user',
-    component: LayoutView,
-    children: [
-      {
-        path: '',
-        name: 'user',
-        component: () => import('@/views/UserView.vue')
       }
     ],
     meta: { requiresAuth: true }

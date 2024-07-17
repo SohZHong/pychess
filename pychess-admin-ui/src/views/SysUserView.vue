@@ -1,7 +1,7 @@
 <template>
     <el-header class="table-header">
         <h2>
-            Users
+            System Users
         </h2>
         <div class="button-container">
             <el-button
@@ -30,7 +30,7 @@
               <el-table-column :prop="'name'" :label="'Name'"/>
               <el-table-column :prop="'email'" :label="'Email'"/>
               <el-table-column :prop="'status'" :label="'Status'"/>
-              <el-table-column :prop="'score'" :label="'Score'"/>
+              <el-table-column :prop="'create_time'" :label="'Create Time'"/>
               <!-- Buttons -->
               <el-table-column :label="'Actions'" #default="scope">
                 <el-button
@@ -99,11 +99,6 @@
           </el-form-item>
         </el-row>
         <el-row>
-          <el-form-item v-if="userFormTitle === 'Edit User'" style="width: 100%;" label="Score" prop="score">
-            <el-input-number v-model="userForm.score" :min="0"/>
-          </el-form-item>
-        </el-row>
-        <el-row>
           <el-form-item label="Status" prop="status">
             <el-radio-group v-model="userForm.status">
               <el-radio value="0">Active</el-radio>
@@ -122,25 +117,32 @@
 </template>
 
 <script lang="ts">
-import { listAllGameUser, insertGameUser, updateGameUser, softDeleteGameUser, GameUserProps } from '@/api/user'
-import { computed, defineComponent, onMounted, reactive, ref } from 'vue'
+import { listAllSysUser, insertSysUser, updateSysUser, softDeleteSysUser } from '@/api/user'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox, FormInstance, FormRules } from 'element-plus'
 import { User, Delete, Edit } from '@element-plus/icons-vue'
 import { InternalRuleItem } from 'async-validator'
 import { useStore } from 'vuex'
+
+interface UserProps {
+  id: number;
+  name: string;
+  email: string;
+  status: string;
+  createTime: Date;
+}
 
 interface UserRuleForm {
   id: number | undefined
   username: string
   password: string
   confirmPassword: string
-  score: number
   email: string
   status: string
 }
 
 export default defineComponent({
-  name: 'UserView',
+  name: 'SysUserView',
   setup () {
     const tableData = ref([])
     // loading status
@@ -158,15 +160,14 @@ export default defineComponent({
       password: '',
       confirmPassword: '',
       email: '',
-      score: 0,
       status: '0'
     })
     const userFormTitle = ref('')
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/
     const ruleFormRef = ref<FormInstance>()
     const store = useStore()
-    const mobile = computed(() => store.state.app.device)
-    const user = computed(() => store.state.user.name)
+    const mobile = store.state.app.device
+    const user = store.state.user.name
 
     const validatePass = (rule: InternalRuleItem, value: string, callback: (error?: string | Error | undefined) => void) => {
       if (value === '') {
@@ -213,7 +214,7 @@ export default defineComponent({
     // Get table data
     const getData = async () => {
       try {
-        const response = await listAllGameUser('')
+        const response = await listAllSysUser('')
         const { data } = response.data
         tableData.value = data
         loading.value = false
@@ -222,9 +223,8 @@ export default defineComponent({
       }
     }
     // Select checkbox function
-    const handleSelectionChange = (selection: GameUserProps[]) => {
-      // Filter out undefined values to ensure numbers only
-      ids.value = selection.map(user => user.id).filter((id): id is number => id !== undefined)
+    const handleSelectionChange = (selection: UserProps[]) => {
+      ids.value = selection.map(user => user.id)
       multipleUsersSelected.value = (selection.length > 1)
     }
     // Add User button function
@@ -261,7 +261,7 @@ export default defineComponent({
           cancelButtonText: 'Cancel',
           type: 'warning'
         }).then(async () => {
-        await softDeleteGameUser(userIds as number | number[])
+        await softDeleteSysUser(userIds as number | number[])
         ElMessage({
           type: 'success',
           message: 'Operation Successful'
@@ -284,13 +284,17 @@ export default defineComponent({
         if (valid) {
           // Determine if meant to insert or update user
           if (userForm.id === undefined) {
-            await insertGameUser({
+            await insertSysUser({
               name: userForm.username,
               password: userForm.password,
               email: userForm.email,
               status: userForm.status,
-              createBy: user.value,
-              updateBy: user.value
+              createBy: user,
+              updateBy: user,
+              id: null,
+              delFlag: null,
+              createTime: null,
+              updateTime: null
             })
             // Display success message
             ElMessage({
@@ -298,14 +302,17 @@ export default defineComponent({
               message: 'Add User Successful'
             })
           } else {
-            await updateGameUser({
+            await updateSysUser({
               id: userForm.id,
               name: userForm.username,
               password: userForm.password,
               email: userForm.email,
               status: userForm.status,
               updateTime: new Date(),
-              updateBy: user.value
+              updateBy: user,
+              createBy: null,
+              delFlag: null,
+              createTime: null
             })
             // Display success message
             ElMessage({

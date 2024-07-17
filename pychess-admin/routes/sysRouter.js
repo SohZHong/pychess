@@ -1,5 +1,6 @@
 const express = require('express');
 const { getAllSysUsers, addSysUser, updateSysUser, deleteSysUsers, fullDeleteSysUsers, updateSysUserSettings } = require('../controllers/system/sysUserController');
+const { getAllGameUsers, addGameUser, updateGameUser, deleteGameUsers, fullDeleteGameUsers } = require('../controllers/system/mainUserController');
 const { getAllQuestionWithAnswers, getAllQuestionType, addQuestion, modifyQuestion, fullDeleteQuestion } = require('../controllers/system/questionController');
 const { getAllChessPieces, addChessPiece, modifyChessPiece, fullDeleteChessPiece } = require('../controllers/system/chessController');
 const { loginSysUser, getLoggedInUser } = require('../controllers/main/authController');
@@ -12,19 +13,32 @@ router.post('/login', loginSysUser);
 // Route to retrieve current user details
 router.get('/getCurrentUser',checkTokenMiddleware, getLoggedInUser);
 
+// ----------- System Users -----------
+// Route to list all users
+router.get('/sys_users', checkTokenMiddleware, getAllSysUsers);
+// Route to add new user
+router.post('/sys_users', checkTokenMiddleware, addSysUser);
+// Route to update user
+router.put('/sys_users', checkTokenMiddleware, updateSysUser);
+// Route to update user del_flag to 1
+router.patch('/sys_users/:id', checkTokenMiddleware, deleteSysUsers); // Single update
+router.patch('/sys_users', checkTokenMiddleware, deleteSysUsers); // Batch update
+// Route to fully delete user(s)
+router.delete('/sys_users/:id', checkTokenMiddleware, fullDeleteSysUsers); // Single delete
+router.delete('/sys_users', checkTokenMiddleware, fullDeleteSysUsers); // Batch 
 // ----------- Users -----------
 // Route to list all users
-router.get('/users', checkTokenMiddleware, getAllSysUsers);
+router.get('/users', checkTokenMiddleware, getAllGameUsers);
 // Route to add new user
-router.post('/users', checkTokenMiddleware, addSysUser);
+router.post('/users', checkTokenMiddleware, addGameUser);
 // Route to update user
-router.put('/users', checkTokenMiddleware, updateSysUser);
+router.put('/users', checkTokenMiddleware, updateGameUser);
 // Route to update user del_flag to 1
-router.patch('/users/:id', checkTokenMiddleware, deleteSysUsers); // Single update
-router.patch('/users', checkTokenMiddleware, deleteSysUsers); // Batch update
+router.patch('/users/:id', checkTokenMiddleware, deleteGameUsers); // Single update
+router.patch('/users', checkTokenMiddleware, deleteGameUsers); // Batch update
 // Route to fully delete user(s)
-router.delete('/users/:id', checkTokenMiddleware, fullDeleteSysUsers); // Single delete
-router.delete('/users', checkTokenMiddleware, fullDeleteSysUsers); // Batch delete
+router.delete('/users/:id', checkTokenMiddleware, fullDeleteGameUsers); // Single delete
+router.delete('/users', checkTokenMiddleware, fullDeleteGameUsers); // Batch delete
 // ----------- Settings -----------
 router.put('/settings', checkTokenMiddleware, updateSysUserSettings)
 // ----------- Questions and Chess Piece -----------

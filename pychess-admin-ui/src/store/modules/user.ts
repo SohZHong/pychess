@@ -24,6 +24,7 @@ const user: Module<UserModuleState, State> = {
       if (!user || refresh) {
         const response = await getCurrentUser()
         const { code, message, data } = response.data
+        console.log(code)
         if (code === 200) {
           username = data.username
           localStorage.setItem('username', data.username)

@@ -13,6 +13,20 @@ export interface UserProps {
   updateTime?: Date | null
 }
 
+export interface GameUserProps {
+  id?: number,
+  name: string,
+  password: string,
+  email: string,
+  score?: number
+  status?: string,
+  delFlag?: string,
+  createBy?: string,
+  createTime?: Date,
+  updateBy?: string,
+  updateTime?: Date
+}
+
 // Retrieve current user data
 export function getCurrentUser () {
   return request({
@@ -21,8 +35,63 @@ export function getCurrentUser () {
   })
 }
 
+// Retrieve all System user
+export function listAllSysUser (query: string) {
+  return request({
+    url: '/api/system/sys_users',
+    method: 'get',
+    params: query
+  })
+}
+// Insert new System user
+export function insertSysUser (data: UserProps) {
+  return request({
+    url: '/api/system/sys_users',
+    method: 'post',
+    data
+  })
+}
+// Update System user
+export function updateSysUser (data: UserProps) {
+  return request({
+    url: '/api/system/sys_users',
+    method: 'put',
+    data
+  })
+}
+// Soft delete System user
+export function softDeleteSysUser (userId: number | number[]) {
+  let url: string = '/api/system/sys_users'
+  let data
+  if (Array.isArray(userId)) {
+    data = { ids: userId } // Send multiple ids as JSON to body
+  } else {
+    url += `/${userId}` // Append single id to url
+  }
+  return request({
+    url,
+    method: 'patch',
+    data
+  })
+}
+// Delete System user
+export function deleteSysUser (userId: number | number[]) {
+  let url: string = '/api/system/sys_users'
+  let data
+  if (Array.isArray(userId)) {
+    data = { ids: userId } // Send multiple ids as JSON to body
+  } else {
+    url += `/${userId}` // Append single id to url
+  }
+  return request({
+    url,
+    method: 'delete',
+    data
+  })
+}
+
 // Retrieve all user
-export function listAllUser (query: string) {
+export function listAllGameUser (query: string) {
   return request({
     url: '/api/system/users',
     method: 'get',
@@ -30,7 +99,7 @@ export function listAllUser (query: string) {
   })
 }
 // Insert new user
-export function insertUser (data: UserProps) {
+export function insertGameUser (data: GameUserProps) {
   return request({
     url: '/api/system/users',
     method: 'post',
@@ -38,7 +107,7 @@ export function insertUser (data: UserProps) {
   })
 }
 // Update user
-export function updateUser (data: UserProps) {
+export function updateGameUser (data: GameUserProps) {
   return request({
     url: '/api/system/users',
     method: 'put',
@@ -46,7 +115,7 @@ export function updateUser (data: UserProps) {
   })
 }
 // Soft delete user
-export function softDeleteUser (userId: number | number[]) {
+export function softDeleteGameUser (userId: number | number[]) {
   let url: string = '/api/system/users'
   let data
   if (Array.isArray(userId)) {
@@ -60,21 +129,7 @@ export function softDeleteUser (userId: number | number[]) {
     data
   })
 }
-// Delete user
-export function deleteUser (userId: number | number[]) {
-  let url: string = '/api/system/users'
-  let data
-  if (Array.isArray(userId)) {
-    data = { ids: userId } // Send multiple ids as JSON to body
-  } else {
-    url += `/${userId}` // Append single id to url
-  }
-  return request({
-    url,
-    method: 'delete',
-    data
-  })
-}
+
 // Update user settings
 export function updateUserSettings (data: UserProps) {
   return request({

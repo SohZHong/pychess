@@ -235,6 +235,7 @@ export default defineComponent({
       userForm.confirmPassword = ''
       userForm.status = '0'
       userForm.email = ''
+      userForm.score = 0
       userFormTitle.value = 'Add User'
       showUserDialog.value = true
     }
@@ -246,6 +247,7 @@ export default defineComponent({
       userForm.confirmPassword = row.password as string
       userForm.status = row.status as string
       userForm.email = row.email as string
+      userForm.score = row.score as number
       userFormTitle.value = 'Edit User'
       showUserDialog.value = true
     }
@@ -304,6 +306,7 @@ export default defineComponent({
               password: userForm.password,
               email: userForm.email,
               status: userForm.status,
+              score: userForm.score,
               updateTime: new Date(),
               updateBy: user.value
             })

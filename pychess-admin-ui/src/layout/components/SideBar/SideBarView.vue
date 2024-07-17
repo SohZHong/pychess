@@ -49,7 +49,7 @@ const items = ref([
     path: '',
     children: [
       {
-        path: '',
+        path: '/',
         text: 'System'
       },
       {

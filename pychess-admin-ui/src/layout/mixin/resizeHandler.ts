@@ -19,15 +19,16 @@ const debounce = (func: DebouncedFunction, wait: number) => {
 export const useResizeHandler = () => {
   const store = useStore()
   const WIDTH = 992 // bootstrap standard
-  // Initial check
   const device = ref(window.innerWidth >= WIDTH ? 'desktop' : 'mobile')
+
   const handleResize = debounce(() => {
     device.value = window.innerWidth >= WIDTH ? 'desktop' : 'mobile'
-    store.dispatch('setDevice', device)
-  }, 300) // Delay by 3 seconds
+    store.dispatch('setDevice', device.value)
+  }, 50) // Delay by 50 milliseconds
 
   onMounted(() => {
     window.addEventListener('resize', handleResize)
+    handleResize() // Initial check
   })
 
   onUnmounted(() => {

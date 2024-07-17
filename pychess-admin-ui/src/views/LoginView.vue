@@ -77,7 +77,7 @@ export default {
             password: loginForm.password
           }).then(() => {
             // Navigate user to homepage
-            router.push('/user')
+            router.push('/')
           }).catch(err => {
             loading.value = false
             console.error(err)

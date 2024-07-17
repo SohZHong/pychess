@@ -49,7 +49,7 @@ const updateUser = async (user) => {
     password = ?,
     email = ?,
     status = ?,
-    score = ?
+    score = ?,
     update_by = ?,
     update_time = ?
     WHERE id = ?;

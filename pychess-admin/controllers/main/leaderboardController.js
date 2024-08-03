@@ -1,7 +1,7 @@
 const ResponseHelper = require('../../models/ResponseHelper');
 const { getLeaderboardStatistics } = require('../../services/main/leaderboardService');
 
-// Fetch API Key
+// Fetch Leaderboard
 const getLeaderboard = async(req, res) => {
     const userId = req.user.id;
     const response = new ResponseHelper(res);

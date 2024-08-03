@@ -110,7 +110,8 @@ const handleDetect = async (detectedString: { map: (arg0: (code: any) => any) =>
   try {
     // QR decoded as Array
     const question: QuestionProps = JSON.parse(detectedString.map((code) => code.rawValue))
-    if (question.side === playerSide.value) {
+    // Scan Opposing Sides e.g. White scan Black's QR
+    if (question.side !== playerSide.value) {
       questions.value.push(question)
     } else {
       await store.dispatch('showAlert', {

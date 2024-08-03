@@ -8,7 +8,8 @@ const insertMatchHistory = async (winner, loser) => {
     FROM DUAL
     WHERE NOT EXISTS (
         SELECT * FROM match_history mh
-        WHERE mh.winner_id = ? OR mh.loser_id = ?
+        WHERE (mh.winner_id = ? OR mh.loser_id = ?)
+        AND mh.end_time >= NOW() - INTERVAL 15 MINUTE
     )
     `
     const params = [winner, loser, winner, loser]
